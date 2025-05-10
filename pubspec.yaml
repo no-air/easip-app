@@ -93,3 +93,16 @@ flutter:
   assets:
     - assets/animations/
     - assets/images/
+
+  fonts:
+    - family: plLight
+      fonts:
+        - asset: assets/fonts/Paperlogy-3Light.ttf
+    - family: plMedium
+      fonts:
+        - asset: assets/fonts/Paperlogy-5Medium.ttf
+    - family: plBold
+      fonts:
+        - asset: assets/fonts/Paperlogy-7Bold.ttf
+
+  
