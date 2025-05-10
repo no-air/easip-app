@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import '../modules/splash/bindings/splash_binding.dart';
+import '../modules/navigation/bindings/navigation_binding.dart';
+import '../modules/navigation/views/navigation_view.dart';
 import '../modules/splash/views/splash/splash_view.dart';
-import '../modules/home/bindings/home_binding.dart';
-import '../modules/home/views/home_view.dart';
+import '../modules/splash/bindings/splash_binding.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -13,9 +13,9 @@ class AppPages {
       binding: SplashBinding(),
     ),
     GetPage(
-      name: Routes.HOME,
-      page: () => const HomeView(),
-      binding: HomeBinding(),
+      name: Routes.NAVIGATION,
+      page: () => const NavigationView(),
+      binding: NavigationBinding(),
     ),
   ];
 } 
