@@ -1,3 +1,5 @@
+import 'package:easip/app/modules/temp/temp_bindings.dart';
+import 'package:easip/app/modules/temp/temp_view.dart';
 import 'package:get/get.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash/splash_view.dart';
@@ -14,8 +16,9 @@ class AppPages {
     ),
     GetPage(
       name: Routes.HOME,
-      page: () => const HomeView(),
+      page: () => HomeView(),
       binding: HomeBinding(),
     ),
+    GetPage(name: Routes.TEMP, page: () => TempView(), binding: TempBinding())
   ];
-} 
+}
