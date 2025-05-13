@@ -1,19 +1,31 @@
 import 'package:easip/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
-import '../controllers/home_controller.dart';
 
-class HomeView extends GetView<HomeController> {
-  const HomeView({super.key});
+class TestWebview extends GetView {
+  TestWebview({super.key});
+
+  final String url = Get.arguments ?? '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('HomeView'), centerTitle: true),
+      appBar: AppBar(title: const Text('Webview'), centerTitle: true),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Expanded(
+              child: InAppWebView(
+                initialSettings: InAppWebViewSettings(
+                  javaScriptEnabled: true,
+                  cacheEnabled: true,
+                  clearCache: true,
+                ),
+                initialUrlRequest: URLRequest(url: WebUri(url)),
+              ),
+            ),
             ElevatedButton(
               onPressed: () {
                 Get.toNamed(
@@ -39,4 +51,4 @@ class HomeView extends GetView<HomeController> {
       ),
     );
   }
-} 
+}
