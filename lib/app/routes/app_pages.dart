@@ -1,3 +1,4 @@
+import 'package:easip/app/components/webview.dart';
 import 'package:get/get.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash/splash_view.dart';
@@ -17,5 +18,6 @@ class AppPages {
       page: () => const HomeView(),
       binding: HomeBinding(),
     ),
+    GetPage(name: Routes.WEB_VIEW, page: () => Webview()),
   ];
-} 
+}
