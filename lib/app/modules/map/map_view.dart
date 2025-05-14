@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/my_controller.dart';
+import 'map_controller.dart';
 
-class MyView extends GetView<MyController> {
-  const MyView({Key? key}) : super(key: key);
+class MapView extends GetView<MapController> {
+  const MapView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('MY'),
+      child: Text('지도'),
     );
   }
 } 

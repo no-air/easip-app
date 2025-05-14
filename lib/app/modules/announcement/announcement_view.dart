@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/announcement_controller.dart';
+import 'announcement_controller.dart';
 
 class AnnouncementView extends GetView<AnnouncementController> {
   const AnnouncementView({Key? key}) : super(key: key);

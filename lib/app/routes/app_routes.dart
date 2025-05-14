@@ -1,6 +1,6 @@
 class Routes {
   static const SPLASH = '/splash';
-  static const NAVIGATION = '/navigation';
+  static const HOME = '/home';
 }
 
 class AppRoutes {
