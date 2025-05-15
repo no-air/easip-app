@@ -33,6 +33,7 @@ dependencies:
   get: ^4.6.6
   lottie: ^3.1.0
   flutter_inappwebview: ^6.1.5
+  flutter_svg: ^2.0.9
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -93,4 +94,17 @@ flutter:
 
   assets:
     - assets/animations/
-    - assets/images/
+    - assets/icon/
+
+  fonts:
+    - family: plLight
+      fonts:
+        - asset: assets/fonts/Paperlogy-3Light.ttf
+    - family: plMedium
+      fonts:
+        - asset: assets/fonts/Paperlogy-5Medium.ttf
+    - family: plBold
+      fonts:
+        - asset: assets/fonts/Paperlogy-7Bold.ttf
+
+  
