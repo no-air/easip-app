@@ -1,4 +1,4 @@
-abstract class ApiRequest {
+abstract class ApiRequest<T> {
   String get baseUrl;
   String get path;
   String get method;
@@ -8,7 +8,16 @@ abstract class ApiRequest {
 
   String get url => '$baseUrl$path';
 
-  T parseResponse<T>(dynamic data);
+  T parseResponse(dynamic data) {
+    final type = T;
+    if (type == List) {
+      if (data is! List) {
+        throw FormatException('Expected List but got ${data.runtimeType}');
+      }
+      return data as T;
+    }
+    return data as T;
+  }
 }
 
 enum HttpMethod {
