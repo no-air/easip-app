@@ -5,7 +5,7 @@ import 'home_controller.dart';
 import '../../theme/app_colors.dart';
 
 class HomeView extends GetView<HomeController> {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
