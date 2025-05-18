@@ -29,21 +29,3 @@ jobs:
       # Run Dart analysis
       - name: Run Dart Analysis
         run: dart analyze
-
-  review:
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-      # Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # Run ChatGPT Code Review
-      - name: Run ChatGPT Code Review
-        uses: anc95/ChatGPT-CodeReview@main
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          LANGUAGE: Korean
-          exclude: "**/*.json, **/*.md, yarn, lock, dist/**"
-    
