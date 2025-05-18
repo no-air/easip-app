@@ -1,4 +1,4 @@
-name: Code Review and Linting
+name: Code Review and Lint Pipeline
 
 permissions:
   contents: read
@@ -9,7 +9,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  lint-and-review:
+  lint:
     runs-on: ubuntu-latest
     steps:
       # Checkout the code
@@ -33,6 +33,14 @@ jobs:
       # Check Dart Formatting
       - name: Check Dart Formatting
         run: dart format --set-exit-if-changed .
+
+  review:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       # Run ChatGPT Code Review
       - name: Run ChatGPT Code Review
