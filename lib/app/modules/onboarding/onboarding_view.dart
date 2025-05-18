@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import '../../core/widgets/image_asset.dart';
 import 'onboarding_controller.dart';
 import 'package:path/path.dart' as path;
 
@@ -71,7 +71,10 @@ class OnboardingView extends GetView<OnboardingController> {
             SizedBox(
               width: imageSize,
               height: imageSize,
-              child: _buildImage(imagePath),
+              child: ImageAsset(
+                imagePath: imagePath,
+                fit: BoxFit.contain,
+              ),
             ),
             const SizedBox(height: 30),
             Text(
@@ -95,21 +98,5 @@ class OnboardingView extends GetView<OnboardingController> {
         );
       },
     );
-  }
-
-  Widget _buildImage(String imagePath) {
-    final extension = path.extension(imagePath).toLowerCase();
-    
-    if (extension == '.svg') {
-      return SvgPicture.asset(
-        imagePath,
-        fit: BoxFit.contain,
-      );
-    } else {
-      return Image.asset(
-        imagePath,
-        fit: BoxFit.contain,
-      );
-    }
   }
 }
