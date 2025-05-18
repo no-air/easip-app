@@ -1,10 +1,9 @@
-class Routes {
-  static const SPLASH = '/splash';
-  static const HOME = '/home';
-  static const WEB_VIEW = '/webview';
-  static const TEST_WEB_VIEW = '/test_webview';
+abstract class Routes {
+  static const initial = '/';
+  static const splash = '/splash';
+  static const home = '/home';
 }
 
 class AppRoutes {
-  static const INITIAL = Routes.SPLASH;
+  static const initial = Routes.splash;
 } 
