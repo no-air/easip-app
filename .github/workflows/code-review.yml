@@ -1,4 +1,4 @@
-name: Code Review From ChatGPT
+name: Code Review and Lint Pipeline
 
 permissions:
   contents: read
@@ -9,12 +9,41 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  code-review:
+  lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: anc95/ChatGPT-CodeReview@main
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Set up Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      # Get dependencies
+      - name: Get dependencies
+        run: flutter pub get
+
+      # Run Dart analysis
+      - name: Run Dart Analysis
+        run: dart analyze
+
+  review:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Run ChatGPT Code Review
+      - name: Run ChatGPT Code Review
+        uses: anc95/ChatGPT-CodeReview@main
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LANGUAGE: Korean
           exclude: "**/*.json, **/*.md, yarn, lock, dist/**"
+    
