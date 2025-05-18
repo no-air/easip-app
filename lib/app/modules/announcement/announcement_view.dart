@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'announcement_controller.dart';
 
 class AnnouncementView extends GetView<AnnouncementController> {
-  const AnnouncementView({Key? key}) : super(key: key);
+  const AnnouncementView({super.key});
 
   @override
   Widget build(BuildContext context) {
