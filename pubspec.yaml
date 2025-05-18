@@ -106,6 +106,9 @@ flutter:
     - family: plMedium
       fonts:
         - asset: assets/fonts/Paperlogy-5Medium.ttf
+    - family: plSemiBold
+      fonts:
+        - asset: assets/fonts/Paperlogy-6SemiBold.ttf
     - family: plBold
       fonts:
         - asset: assets/fonts/Paperlogy-7Bold.ttf

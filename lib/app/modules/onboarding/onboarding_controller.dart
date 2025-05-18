@@ -9,7 +9,6 @@ class OnboardingController extends GetxController {
     @override
     void onInit() {
         super.onInit();
-        
         _initPageController();
     }
 

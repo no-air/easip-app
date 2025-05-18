@@ -5,6 +5,8 @@ import '../modules/splash/splash_view.dart';
 import '../modules/splash/splash_binding.dart';
 import '../modules/onboarding/onboarding_view.dart';
 import '../modules/onboarding/onboarding_binding.dart';
+import '../modules/onboarding/sign_in_view.dart';
+import '../modules/onboarding/sign_in_binding.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -18,6 +20,11 @@ class AppPages {
       name: Routes.ONBOARDING,
       page: () => const OnboardingView(),
       binding: OnboardingBinding(),
+    ),
+    GetPage(
+      name: Routes.SIGN_IN,
+      page: () => const SignInView(),
+      binding: SignInBinding(),
     ),
     GetPage(
       name: Routes.HOME,

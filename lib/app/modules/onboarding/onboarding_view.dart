@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/widgets/image_asset.dart';
+import '../../core/utils/screen_utils.dart';
 import 'onboarding_controller.dart';
-import 'package:path/path.dart' as path;
+import 'sign_in_view.dart';
 
 class OnboardingView extends GetView<OnboardingController> {
   const OnboardingView({super.key});
@@ -30,30 +31,33 @@ class OnboardingView extends GetView<OnboardingController> {
                 '맞춤형 청약 가이드',
                 '내 조건에 맞는 청약중 가장 일치하는\n오늘의 청약 공고를 추천해드립니다.',
               ),
+              SignInView(),
             ],
           ),
-          Positioned(
-            bottom: 40,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                controller.totalPages,
-                (index) => Obx(() => Container(
-                  width: 8,
-                  height: 8,
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: controller.currentPage.value == index
-                      ? Theme.of(context).primaryColor
-                      : Colors.grey.withValues(alpha: 0.3),
+          Obx(() => controller.currentPage.value < controller.totalPages
+            ? Positioned(
+                bottom: 40,
+                left: 0,
+                right: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    controller.totalPages,
+                    (index) => Container(
+                      width: 8,
+                      height: 8,
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: controller.currentPage.value == index
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey.withOpacity(0.3),
+                      ),
+                    ),
                   ),
-                )),
-              ),
-            ),
-          ),
+                ),
+              )
+            : const SizedBox.shrink()),
         ],
       ),
     );
@@ -62,8 +66,7 @@ class OnboardingView extends GetView<OnboardingController> {
   Widget _buildOnboardingPage(String imagePath, String title, String description) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final screenWidth = constraints.maxWidth;
-        final imageSize = screenWidth * 261 / 373;
+        final imageSize = ScreenUtils.ratioWidth(context, 261);
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
