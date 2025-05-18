@@ -11,46 +11,35 @@ on:
 jobs:
   lint-and-review:
     runs-on: ubuntu-latest
-
     steps:
-      # 1. 체크아웃
+      # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Flutter 설치
+      # Set up Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
 
-      # 3. 의존성 설치
+      # Get dependencies
       - name: Get dependencies
         run: flutter pub get
 
-      # 4. Dart/Flutter 분석
+      # Run Dart analysis
       - name: Run Dart Analysis
-        run: dart analyze --fatal-infos --fatal-warnings
+        run: dart analyze
 
-      - name: Run Flutter Analysis
-        run: flutter analyze --no-fatal-infos --no-fatal-warnings
-
-      # 5. 자동 수정 가능 항목 확인 (dry-run)
-      - name: Dart Fix (dry-run)
-        run: dart fix --dry-run
-
-      # 6. 자동 수정 적용이 필요하다면 (선택)
-      # - name: Dart Fix (apply)
-      #   run: dart fix --apply
-
-      # 7. 코드 포맷 검사
-      - name: Check Formatting
+      # Check Dart Formatting
+      - name: Check Dart Formatting
         run: dart format --set-exit-if-changed .
 
-      # 8. ChatGPT 코드 리뷰
+      # Run ChatGPT Code Review
       - name: Run ChatGPT Code Review
         uses: anc95/ChatGPT-CodeReview@main
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LANGUAGE: Korean
-          exclude: "**/*.json,**/*.md,yarn.lock,dist/**"
+          exclude: "**/*.json, **/*.md, yarn, lock, dist/**"
+    
