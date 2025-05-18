@@ -8,12 +8,12 @@ abstract class NetworkException implements Exception {
 }
 
 class TimeoutException extends NetworkException {
-  TimeoutException(String message) : super(message);
+  TimeoutException(super.message);
 }
 
 class HttpException extends NetworkException {
   final int? statusCode;
   final dynamic data;
 
-  HttpException(String message, {this.statusCode, this.data}) : super(message);
+  HttpException(super.message, {this.statusCode, this.data});
 } 

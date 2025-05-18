@@ -24,7 +24,7 @@ final class RemoteDataSource {
     ));
   }
 
-  Future<T> execute<T>(ApiRequest<T> request) async {
+  Future<T?> execute<T>(ApiRequest<T> request) async {
     try {
       final response = await _dio.request(
         request.url,
@@ -33,18 +33,10 @@ final class RemoteDataSource {
         options: Options(
           method: request.method,
           headers: request.headers,
-          validateStatus: (status) => status != null && status < 500,
+          validateStatus: (status) => status != null && [200, 201, 204].contains(status),
         ),
       );
       
-      if (response.statusCode != 200) {
-        throw HttpException(
-          '서버 에러: ${response.statusCode}',
-          statusCode: response.statusCode,
-          data: response.data,
-        );
-      }
-
       return request.parseResponse(response.data);
     } on DioException catch (e) {
       throw _handleError(e);
