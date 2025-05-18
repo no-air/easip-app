@@ -20,7 +20,7 @@ class SplashView extends GetView<SplashController> {
               height: 200,
               fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) {
-                print('Lottie 에러: $error');
+                // TODO: 로깅 프레임워크로 대체
                 return const Icon(Icons.error, size: 100);
               },
             ),
