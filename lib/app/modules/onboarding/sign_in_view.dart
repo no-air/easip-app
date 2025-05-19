@@ -21,7 +21,7 @@ class SignInView extends GetView<SignInController> {
                   width: ScreenUtils.ratioWidth(context, 138),
                   height: ScreenUtils.ratioWidth(context, 128),
                   child: const ImageAsset(
-                    imagePath: 'assets/images/sign_in.png',
+                    imagePath: 'assets/images/onboarding4.png',
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -38,14 +38,12 @@ class SignInView extends GetView<SignInController> {
             ),
           ),
           Positioned(
-            bottom: ScreenUtils.ratioHeight(context, 30),
+            bottom: MediaQuery.of(context).padding.bottom + ScreenUtils.ratioHeight(context, 30),
             left: ScreenUtils.ratioHeight(context, 30),
             right: ScreenUtils.ratioHeight(context, 30),
             child: SocialSignInButton(
               imagePath: 'assets/images/google_sign_in.svg',
-              onTap: () {
-                // TODO: 구글 로그인 구현
-              },
+              onTap: () => controller.signInWithGoogle(),
             ),
           ),
         ],

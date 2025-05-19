@@ -20,16 +20,19 @@ class OnboardingView extends GetView<OnboardingController> {
                 'assets/images/onboarding1.svg',
                 '쉽게 찾는 청년 주택',
                 '복잡한 청약 정보를 한눈에 확인하고\n나에게 맞는 청년주택을 찾아보세요.',
+                const Size(261, 261),
               ),
               _buildOnboardingPage(
                 'assets/images/onboarding2.svg',
                 '놓치지 않는 청약 알림',
                 '내 조건에 맞는 청약 일정을 자동으로 알려드려\n기회를 놓치지 않도록 도와드립니다.',
+                const Size(197, 202),
               ),
               _buildOnboardingPage(
                 'assets/images/onboarding3.svg',
                 '맞춤형 청약 가이드',
                 '내 조건에 맞는 청약중 가장 일치하는\n오늘의 청약 공고를 추천해드립니다.',
+                const Size(197, 232),
               ),
               SignInView(),
             ],
@@ -63,17 +66,19 @@ class OnboardingView extends GetView<OnboardingController> {
     );
   }
 
-  Widget _buildOnboardingPage(String imagePath, String title, String description) {
+  Widget _buildOnboardingPage(String imagePath, String title, String description, Size baseSize) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final imageSize = ScreenUtils.ratioWidth(context, 261);
-
+        final imageSize = Size(
+          ScreenUtils.ratioWidth(context, baseSize.width),
+          ScreenUtils.ratioWidth(context, baseSize.height),
+        );
+        
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              width: imageSize,
-              height: imageSize,
+            Container(
+              constraints: BoxConstraints.tight(imageSize),
               child: ImageAsset(
                 imagePath: imagePath,
                 fit: BoxFit.contain,
