@@ -8,7 +8,9 @@ abstract class ApiRequest<T> {
 
   String get url => '$baseUrl$path';
 
-  T parseResponse(dynamic data) {
+  T? parseResponse(dynamic data) {
+    if (data == null) return null;
+    
     final type = T;
     if (type == List) {
       if (data is! List) {

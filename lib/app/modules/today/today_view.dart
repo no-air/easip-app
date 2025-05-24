@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'today_controller.dart';
 
 class TodayView extends GetView<TodayController> {
-  const TodayView({Key? key}) : super(key: key);
+  const TodayView({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,11 @@
 class Routes {
-  static const SPLASH = '/splash';
-  static const ONBOARDING = '/onboarding';
-  static const SIGN_IN = '/sign-in';
-  static const HOME = '/home';
+  static const initial = '/';
+  static const splash = '/splash';
+  static const home = '/home';
+  static const onboarding = '/onboarding';
+  static const signin = '/sign-in';
 }
 
 class AppRoutes {
-  static const INITIAL = Routes.SPLASH;
+  static const initial = Routes.splash;
 } 

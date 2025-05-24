@@ -2,8 +2,7 @@ import 'package:flutter_config/flutter_config.dart';
 
 enum Environment {
     dev,
-    prod,
-    test;
+    prod;
 
     String get baseUrlKey {
         switch (this) {
@@ -11,8 +10,6 @@ enum Environment {
                 return 'DEV_BASE_URL';
             case Environment.prod:
                 return 'PROD_BASE_URL';
-            case Environment.test:
-                return 'TEST_BASE_URL';
         }
     }
 
@@ -22,8 +19,6 @@ enum Environment {
                 return FlutterConfig.get('DEV_BASE_URL');
             case Environment.prod:
                 return FlutterConfig.get('PROD_BASE_URL');
-            case Environment.test:
-                return 'https://jsonplaceholder.typicode.com';
         }
     }
 }

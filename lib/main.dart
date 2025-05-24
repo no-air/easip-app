@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'app/routes/app_routes.dart';
 import 'app/routes/app_pages.dart';
+import 'app/routes/app_routes.dart';
 import 'app/theme/app_colors.dart';
 import 'app/services/auth_service.dart';
 
 void main() {
   Get.put(AuthService());
-  runApp(const MyApp());
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
         primaryColor: AppColors.eRed,
         scaffoldBackgroundColor: Colors.white,
       ),
-      initialRoute: AppRoutes.INITIAL,
-      getPages: AppPages.routes,
+      initialRoute: AppRoutes.initial,
+      getPages: AppPages.pages,
       debugShowCheckedModeBanner: false,
     );
   }
