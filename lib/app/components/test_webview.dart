@@ -7,7 +7,7 @@ class TestWebviewController extends GetxController {
 }
 
 class TestWebview extends GetView<TestWebviewController> {
-  const TestWebview({Key? key}) : super(key: key);
+  const TestWebview({super.key});
 
   @override
   Widget build(BuildContext context) {

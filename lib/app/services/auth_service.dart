@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../constants/secure_storage_keys.dart';
+import 'package:flutter/material.dart';
 
 class AuthService extends GetxService {
   final GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -49,19 +50,6 @@ class AuthService extends GetxService {
     } catch (e) {
       debugPrint('AuthService: Google Sign-In Error: $e');
       rethrow;
-    }
-  }
-}
-
-enum SecureStorageKey {
-  googleAccessToken,
-}
-
-extension SecureStorageKeyExtension on SecureStorageKey {
-  String get value {
-    switch (this) {
-      case SecureStorageKey.googleAccessToken:
-        return 'google_access_token';
     }
   }
 }

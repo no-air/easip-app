@@ -54,7 +54,7 @@ class OnboardingView extends GetView<OnboardingController> {
                         shape: BoxShape.circle,
                         color: controller.currentPage.value == index
                           ? Theme.of(context).primaryColor
-                          : Colors.grey.withOpacity(0.3),
+                          : Colors.grey.withValues(alpha: 0.3),
                       ),
                     ),
                   ),
