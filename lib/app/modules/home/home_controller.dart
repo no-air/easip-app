@@ -7,7 +7,7 @@ import '../my/my_view.dart';
 
 class HomeController extends GetxController {
   int currentIndex = 0;
-  late final List<Widget> pages;
+  late List<Widget> pages;
 
   @override
   void onInit() {
