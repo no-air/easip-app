@@ -1,15 +1,16 @@
-import 'package:easip_app/app/components/webview.dart';
+import 'package:easip_app/app/components/webview/webview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'today_controller.dart';
 
 class TodayView extends GetView<TodayController> {
-  const TodayView({super.key});
+  TodayView({super.key});
+  final String baseUrl = dotenv.env['WEBVIEW_URL'] ?? '';
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Webview(url: '/home'),
+    return Center(child: Webview(url: '$baseUrl/home'),
     );
   }
 }

@@ -18,6 +18,7 @@ Future main() async {
     await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
   }
   Get.put(AuthService());
+  
   runApp(const App());
 }
 
