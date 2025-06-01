@@ -35,7 +35,7 @@ dependencies:
   flutter_inappwebview: ^6.1.5
   flutter_svg: ^2.0.9
   dio: ^5.4.0
-  flutter_config: ^2.0.2
+  flutter_dotenv: ^5.1.0
   path: ^1.8.3
   google_sign_in: ^6.3.0
 
