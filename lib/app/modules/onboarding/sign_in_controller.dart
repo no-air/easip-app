@@ -13,12 +13,14 @@ class SignInController extends GetxController {
 
     Future<void> signInWithGoogle() async {
         try {
-            isLoading.value = true;
-            final account = await _authService.signInWithGoogle();
+            // isLoading.value = true;
+            // final account = await _authService.signInWithGoogle();
             
-            if (account != null) {
-                Get.offAllNamed('/home');
-            }
+            // if (account != null) {
+            //     Get.offAllNamed('/home');
+            // }
+            // survey page
+            Get.offAllNamed('/survey'); 
         } catch (e) {
             Get.snackbar(
                 '로그인 실패',
@@ -29,4 +31,4 @@ class SignInController extends GetxController {
             isLoading.value = false;
         }
     }
-} 
+}
