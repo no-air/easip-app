@@ -7,10 +7,13 @@ import 'app/theme/app_colors.dart';
 import 'app/services/auth_service.dart';
 import 'app/core/network/data_source.dart';
 import 'app/core/config/env_config.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Always initialize AuthService
+  final authService = AuthService();
+  Get.put(authService, permanent: true);
 
   try {
     await dotenv.load(fileName: ".env");
@@ -19,9 +22,6 @@ Future<void> main() async {
     
     final dataSource = RemoteDataSource();
     Get.put(dataSource, permanent: true);
-    
-    final authService = AuthService();
-    Get.put(authService, permanent: true);
     
     runApp(const App());
   } catch (e, stackTrace) {

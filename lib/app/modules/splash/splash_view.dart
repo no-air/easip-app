@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
+import '../../core/widgets/image_asset.dart';
+import '../../core/utils/screen_utils.dart';
 import 'splash_controller.dart';
 
 class SplashView extends GetView<SplashController> {
@@ -14,23 +15,21 @@ class SplashView extends GetView<SplashController> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Lottie.asset(
-              'assets/animations/easip_logo.json',
-              width: 200,
-              height: 200,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                // TODO: 로깅 프레임워크로 대체
-                return const Icon(Icons.error, size: 100);
-              },
+            SizedBox(
+              width: ScreenUtils.ratioWidth(context, 138),
+              height: ScreenUtils.ratioWidth(context, 128),
+              child: const ImageAsset(
+                imagePath: 'assets/images/onboarding4.png',
+                fit: BoxFit.contain,
+              ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             const Text(
-              'Easip',
+              '어려운 주택 청약을\n쉽게 관리하자',
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                fontFamily: 'plSemiBold',
+                fontSize: 29,
               ),
             ),
           ],
