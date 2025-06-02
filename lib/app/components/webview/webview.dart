@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:easip_app/app/routes/app_routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -26,31 +23,22 @@ class _WebviewState extends State<Webview> {
       webViewController.addJavaScriptHandler(
         handlerName: "goToPage",
         callback: (args) async {
-          Get.toNamed(Routes.initial);
-
-          return {'status': 'success', 'received_args': args};
+          if (args.isEmpty || args[0] == null) {
+            return;
+          }
+          if (args[0] is String && args[0].toString().startsWith('http')) {
+            Get.to(Webview(url: args[0] as String, isSafeArea: isSafeArea));
+            return;
+          }
+          Get.toNamed(args[0] as String);
         },
       );
-    }
-
-    void onLoadStop(InAppWebViewController controller, WebUri? url) async {
-      log('Page finished loading: $url');
-      try {
-        await controller.evaluateJavascript(
-          source: """
-        if (!window.flutter) {
-          window.flutter = true;
-          console.log('Flutter environment enabled via evaluateJavascript.');
-        } else {
-          console.error('useFlutterStore or its actions not found on window.');
-        }
-      """,
-        );
-      } catch (e) {
-        if (kDebugMode) {
-          print("Error calling setIsFlutterEnabled: $e");
-        }
-      }
+      webViewController.addJavaScriptHandler(
+        handlerName: "goBack",
+        callback: (args) async {
+          Get.back();
+        },
+      );
     }
 
     if (url.isEmpty) {
@@ -61,25 +49,27 @@ class _WebviewState extends State<Webview> {
       print('Webview URL: $url');
     }
 
-    return SafeArea(
-      top: isSafeArea,
-      bottom: isSafeArea,
-      child: InAppWebView(
-        initialSettings: InAppWebViewSettings(
-          javaScriptEnabled: true,
-          cacheEnabled: true,
-          clearCache: true,
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        top: isSafeArea,
+        bottom: isSafeArea,
+        child: InAppWebView(
+          initialSettings: InAppWebViewSettings(
+            javaScriptEnabled: true,
+            cacheEnabled: true,
+            clearCache: true,
+          ),
+          onWebViewCreated: onWebViewCreated,
+          onConsoleMessage: (_, consoleMessage) {
+            if (kDebugMode) {
+              print(
+                '🌐 WebView Console: [${consoleMessage.messageLevel}] ${consoleMessage.message}',
+              );
+            }
+          },
+          initialUrlRequest: URLRequest(url: WebUri(url)),
         ),
-        onWebViewCreated: onWebViewCreated,
-        onLoadStop: onLoadStop,
-        onConsoleMessage: (_, consoleMessage) {
-          if (kDebugMode) {
-            print(
-              '🌐 WebView Console: [${consoleMessage.messageLevel}] ${consoleMessage.message}',
-            );
-          }
-        },
-        initialUrlRequest: URLRequest(url: WebUri(url)),
       ),
     );
   }
