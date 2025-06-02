@@ -11,7 +11,6 @@ import 'app/core/config/env_config.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Always initialize AuthService
   final authService = AuthService();
   Get.put(authService, permanent: true);
 

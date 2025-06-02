@@ -4,6 +4,7 @@ import '../today/today_view.dart';
 import '../map/map_view.dart';
 import '../announcement/announcement_view.dart';
 import '../my/my_view.dart';
+import '../my/my_controller.dart';
 
 class HomeController extends GetxController {
   int currentIndex = 0;
@@ -12,6 +13,9 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    
+    Get.put(MyController());
+    
     pages = [
       const TodayView(),
       const MapView(),
