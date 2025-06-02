@@ -1,3 +1,5 @@
+import 'package:easip_app/app/core/network/router/auth_router.dart';
+import 'package:easip_app/app/modules/account/token_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
@@ -5,27 +7,31 @@ import 'dart:io' show Platform;
 
 class AuthService extends GetxService {
   static AuthService get to => Get.find<AuthService>();
-  
+
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'profile', 'openid'],
     signInOption: SignInOption.standard,
-    serverClientId: Platform.isAndroid ? '836328638609-f5f6pbblpqt07cb1u48a178ivhd182rk.apps.googleusercontent.com' : null,
+    serverClientId:
+        Platform.isAndroid
+            ? '836328638609-f5f6pbblpqt07cb1u48a178ivhd182rk.apps.googleusercontent.com'
+            : null,
   );
-  
+
   final Rx<GoogleSignInAccount?> currentUser = Rx<GoogleSignInAccount?>(null);
-  final Rx<GoogleSignInAuthentication?> currentAuth = Rx<GoogleSignInAuthentication?>(null);
+  final Rx<GoogleSignInAuthentication?> currentAuth =
+      Rx<GoogleSignInAuthentication?>(null);
 
   Future<GoogleSignInAccount?> signInWithGoogle() async {
     try {
       debugPrint('AuthService: Starting Google sign in');
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
-      
+      final GoogleSignInAuthentication? auth = await account?.authentication;
+
       if (account == null) {
         debugPrint('AuthService: Google sign in cancelled or failed');
         return null;
       }
 
-      final GoogleSignInAuthentication auth = await account.authentication;
       currentAuth.value = auth;
 
       if (currentAuth.value?.idToken == null) {
@@ -52,5 +58,16 @@ class AuthService extends GetxService {
     } catch (e) {
       debugPrint('AuthService: Google sign out error - $e');
     }
+  }
+
+  Future<AuthResponse> refresh() async {
+    final refreshToken = await TokenStorage.refreshToken;
+    if (refreshToken == null) {
+      throw Exception('Refresh token not found');
+    }
+    final request = AuthRouter.refresh(refreshToken: refreshToken);
+    final response = AuthResponse.fromJson(request.body!);
+    TokenStorage.saveAuthResponse(response);
+    return response;
   }
 }

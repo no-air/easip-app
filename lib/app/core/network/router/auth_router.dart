@@ -10,7 +10,15 @@ class AuthRouter {
     return AuthRequest<AuthResponse>(
       path: '/v1/auth/social/${provider.value}',
       method: HttpMethod.post,
-      body: {'socialToken': socialToken},
+      body: {"socialToken": socialToken},
+    );
+  }
+
+  static refresh({required String refreshToken}) {
+    return AuthRequest<AuthResponse>(
+      path: '/v1/auth/refresh',
+      method: HttpMethod.post,
+      body: {"refreshToken": refreshToken},
     );
   }
 }
@@ -18,11 +26,10 @@ class AuthRouter {
 enum AuthProvider {
   google('GOOGLE'),
   apple('APPLE');
-  
+
   final String value;
   const AuthProvider(this.value);
 }
-
 
 class AuthRequest<T> extends ApiRequest<T> {
   final String _path;
@@ -33,9 +40,9 @@ class AuthRequest<T> extends ApiRequest<T> {
     required String path,
     required HttpMethod method,
     Map<String, dynamic>? body,
-  })  : _path = path,
-        _method = method,
-        _body = body;
+  }) : _path = path,
+       _method = method,
+       _body = body;
 
   @override
   String get baseUrl => EnvConfig().baseUrl;
@@ -82,11 +89,15 @@ class AuthResponse {
     final isTemporaryToken = json['isTemporaryToken'] as bool?;
 
     if (accessToken == null || isTemporaryToken == null) {
-      throw FormatException('Required fields (accessToken, isTemporaryToken) are missing in the response');
+      throw FormatException(
+        'Required fields (accessToken, isTemporaryToken) are missing in the response',
+      );
     }
 
     if (!isTemporaryToken && refreshToken == null) {
-      throw FormatException('refreshToken is required for non-temporary tokens');
+      throw FormatException(
+        'refreshToken is required for non-temporary tokens',
+      );
     }
 
     return AuthResponse(
