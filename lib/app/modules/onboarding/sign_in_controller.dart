@@ -9,7 +9,6 @@ import 'package:dio/dio.dart';
 class SignInController extends GetxController {
     late final AuthService _authService;
     late final RemoteDataSource _dataSource;
-    // final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
     final isLoading = false.obs;
 
     @override
@@ -26,28 +25,28 @@ class SignInController extends GetxController {
             
             final account = await _authService.signInWithGoogle();
             if (account != null) {
-                await signInEazip();
+                await signInEasip();
             }
         } catch (e) {
             debugPrint('SignInController: Google sign in failed - $e');
-            Get.snackbar(
-                '로그인 실패',
-                '구글 로그인 중 오류가 발생했습니다: ${e.toString()}',
-                snackPosition: SnackPosition.BOTTOM,
-            );
+            // Get.snackbar(
+            //     '로그인 실패',
+            //     '구글 로그인 중 오류가 발생했습니다: ${e.toString()}',
+            //     snackPosition: SnackPosition.BOTTOM,
+            // );
         } finally {
             isLoading.value = false;
         }
     }
 
-    Future<void> signInEazip() async {
+    Future<void> signInEasip() async {
         try {
             final token = _authService.currentAuth.value?.idToken;
             if (token == null) {
                 throw Exception('Google token not found');
             }
             
-            debugPrint('SignInController: Starting Eazip sign in with token');
+            debugPrint('SignInController: Starting Easip sign in with token');
             final request = AuthRouter.signIn(
                 provider: AuthProvider.google, 
                 socialToken: token
@@ -58,17 +57,17 @@ class SignInController extends GetxController {
                 throw Exception('서버 응답이 없습니다');
             }
             
-            debugPrint('SignInController: Eazip sign in successful');
+            debugPrint('SignInController: Easip sign in successful');
         } catch (e) {
-            debugPrint('SignInController: Eazip sign in failed - $e');
+            debugPrint('SignInController: Easip sign in failed - $e');
             if (e is DioException) {
                 debugPrint('SignInController: Server error - ${e.response?.statusCode}');
             }
-            Get.snackbar(
-                '로그인 실패', 
-                '서버 로그인 중 오류가 발생했습니다: ${e.toString()}', 
-                snackPosition: SnackPosition.BOTTOM
-            );
+            // Get.snackbar(
+            //     '로그인 실패', 
+            //     '서버 로그인 중 오류가 발생했습니다: ${e.toString()}', 
+            //     snackPosition: SnackPosition.BOTTOM
+            // );
         }
     }
 } 

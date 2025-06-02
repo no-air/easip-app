@@ -1,55 +1,56 @@
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../constants/secure_storage_keys.dart';
-import 'package:flutter/material.dart';
+import 'dart:io' show Platform;
 
 class AuthService extends GetxService {
+  static AuthService get to => Get.find<AuthService>();
+  
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: [
-      'email',
-      'profile',
-    ],
-    signInOption: SignInOption.standard,  // iOS에서 표준 로그인 방식 사용
+    scopes: ['email', 'profile', 'openid'],
+    signInOption: SignInOption.standard,
+    serverClientId: Platform.isAndroid ? '836328638609-f5f6pbblpqt07cb1u48a178ivhd182rk.apps.googleusercontent.com' : null,
   );
-  final FlutterSecureStorage  _secureStorage = FlutterSecureStorage();
-
+  
   final Rx<GoogleSignInAccount?> currentUser = Rx<GoogleSignInAccount?>(null);
+  final Rx<GoogleSignInAuthentication?> currentAuth = Rx<GoogleSignInAuthentication?>(null);
 
   Future<GoogleSignInAccount?> signInWithGoogle() async {
     try {
-      // 현재 로그인된 계정이 있는지 확인
-      final currentAccount = await _googleSignIn.signInSilently();
-      if (currentAccount != null) {
-        currentUser.value = currentAccount;
-        return currentAccount;
-      }
-
-      // 새로운 로그인 시도
+      debugPrint('AuthService: Starting Google sign in');
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
+      
       if (account == null) {
+        debugPrint('AuthService: Google sign in cancelled or failed');
         return null;
       }
 
       final GoogleSignInAuthentication auth = await account.authentication;
-      await _secureStorage.write(key: SecureStorageKey.googleAccessToken.value, value: auth.accessToken);
+      currentAuth.value = auth;
+
+      if (currentAuth.value?.idToken == null) {
+        debugPrint('AuthService: Google ID token is null');
+        return null;
+      }
+
       currentUser.value = account;
+      debugPrint('AuthService: Google sign in successful - ${account.email}');
       return account;
-      } catch (e) {
-      debugPrint('AuthService: Google Sign-In Error: $e');
-      rethrow;
+    } catch (e) {
+      debugPrint('AuthService: Google sign in error - $e');
+      return null;
     }
   }
 
-  Future<void> signOut() async {
+  Future<void> signOutWithGoogle() async {
     try {
+      debugPrint('AuthService: Starting Google sign out');
       await _googleSignIn.signOut();
       currentUser.value = null;
-      await _secureStorage.deleteAll();
+      currentAuth.value = null;
+      debugPrint('AuthService: Google sign out successful');
     } catch (e) {
-      debugPrint('AuthService: Google Sign-In Error: $e');
-      rethrow;
+      debugPrint('AuthService: Google sign out error - $e');
     }
   }
 }
