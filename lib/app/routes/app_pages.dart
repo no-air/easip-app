@@ -1,3 +1,4 @@
+import 'package:easip_app/app/modules/post/post_view.dart';
 import 'package:get/get.dart';
 import '../modules/splash/splash_binding.dart';
 import '../modules/splash/splash_view.dart';
@@ -14,7 +15,7 @@ import 'app_routes.dart';
 class AppPages {
   static final pages = [
     GetPage(
-      name: Routes.initial,
+      name: Routes.splash,
       page: () => const SplashView(),
       binding: SplashBinding(),
     ),
@@ -38,5 +39,9 @@ class AppPages {
       page: () => const SurveyView(),
       binding: SurveyBinding(),
     ),
+    GetPage(
+      name: Routes.post,
+      page: () => PostView()),
+      pinding: PostBinding(),
   ];
 }

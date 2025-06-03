@@ -1,12 +1,28 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/theme/app_colors.dart';
 import 'app/services/auth_service.dart';
+import 'app/core/network/data_source.dart';
+import 'app/core/config/env_config.dart';
 
-void main() {
+
+WebViewEnvironment? webViewEnvironment;
+
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+    await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
+  }
   Get.put(AuthService());
+  
   runApp(const App());
 }
 
