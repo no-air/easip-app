@@ -8,6 +8,8 @@ import '../modules/onboarding/onboarding_view.dart';
 import '../modules/onboarding/onboarding_binding.dart';
 import '../modules/onboarding/sign_in_view.dart';
 import '../modules/onboarding/sign_in_binding.dart';
+import '../modules/survey/survey_binding.dart';
+import '../modules/survey/survey_view.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -32,6 +34,14 @@ class AppPages {
       page: () => const HomeView(),
       binding: HomeBinding(),
     ),
-    GetPage(name: Routes.post, page: () => PostView()),
+    GetPage(
+      name: Routes.survey,
+      page: () => const SurveyView(),
+      binding: SurveyBinding(),
+    ),
+    GetPage(
+      name: Routes.post,
+      page: () => PostView()),
+      pinding: PostBinding(),
   ];
-} 
+}
