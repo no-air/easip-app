@@ -155,24 +155,24 @@ class MyToggleRow extends StatelessWidget {
                     bool isSelected = currentValue == index;
                     
                     return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
                         color: isSelected ? Colors.blue : Colors.transparent,
-                        borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: isSelected ? Colors.blue : Colors.white,
                           width: 1,
                         ),
-                      ),
-                      child: Text(
+                  ),
+                  child: Text(
                         option,
                         style: TextStyle(
                           fontFamily: 'plMedium',
-                          fontSize: 14,
+                      fontSize: 14,
                           color: isSelected ? Colors.white : Colors.black87,
                           fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
-                        ),
-                      ),
+                    ),
+                  ),
                     );
                   }).toList(),
                 ),

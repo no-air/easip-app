@@ -56,13 +56,40 @@ class MyView extends GetView<MyController> {
                 ],
               ),
               const SizedBox(height: 10),
-              const Text(
-                '붕어붕어금붕어',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontFamily: 'plMedium',
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              GetX<MyController>(
+                builder: (controller) => Column(
+                  children: [
+                    if (controller.isEditMode.value)
+                      SizedBox(
+                        child: TextField(
+                          controller: controller.nameController,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'plMedium',
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          decoration: const InputDecoration(
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                          ),
+                        ),
+                      )
+                    else
+                      Text(
+                        controller.personalInfo.value?.name ?? '',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'plMedium',
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                  ],
                 ),
               ),
               const SizedBox(height: 18),
@@ -230,50 +257,6 @@ class MyView extends GetView<MyController> {
           ],
         ),
       ],
-    );
-  }
-}
-
-class PersonalInfoModel {
-  final String name;
-  final String dayOfBirth;
-  final List<String> likingDistrictIds;
-  final String livingDistrictId;
-  final int myMonthlySalary;
-  final int familyMemberMonthlySalary;
-  final int allFamilyMemberCount;
-  final String position;
-  final bool hasCar;
-  final int carPrice;
-  final int assetPrice;
-
-  PersonalInfoModel({
-    required this.name,
-    required this.dayOfBirth,
-    required this.likingDistrictIds,
-    required this.livingDistrictId,
-    required this.myMonthlySalary,
-    required this.familyMemberMonthlySalary,
-    required this.allFamilyMemberCount,
-    required this.position,
-    required this.hasCar,
-    required this.carPrice,
-    required this.assetPrice,
-  });
-
-  factory PersonalInfoModel.fromJson(Map<String, dynamic> json) {
-    return PersonalInfoModel(
-      name: json['name'] ?? '',
-      dayOfBirth: json['dayOfBirth'] ?? '',
-      likingDistrictIds: List<String>.from(json['likingDistrictIds'] ?? []),
-      livingDistrictId: json['livingDistrictId'] ?? '',
-      myMonthlySalary: json['myMonthlySalary'] ?? 0,
-      familyMemberMonthlySalary: json['familyMemberMonthlySalary'] ?? 0,
-      allFamilyMemberCount: json['allFamilyMemberCount'] ?? 0,
-      position: json['position'] ?? '',
-      hasCar: json['hasCar'] ?? false,
-      carPrice: json['carPrice'] ?? 0,
-      assetPrice: json['assetPrice'] ?? 0,
     );
   }
 }

@@ -1,13 +1,20 @@
+import 'package:easip_app/app/core/network/router/my_router.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'models/personal_information_model.dart';
+import 'package:easip_app/app/core/network/data_source.dart';
 
 class MyController extends GetxController {
+  late final RemoteDataSource _dataSource;
+
   final isEditMode = false.obs;
   final hasHouse = false.obs;
   final selectedPosition = false.obs;
-  final canEdit = true.obs;  // 수정하기 버튼 활성화 상태
+  final canEdit = true.obs; 
+  final personalInfo = Rxn<PersonalInformationModel>();
   
   // TextEditingControllers
+  late TextEditingController nameController;
   late TextEditingController dayOfBirthController;
   late TextEditingController mySalaryController;
   late TextEditingController familySalaryController;
@@ -18,26 +25,65 @@ class MyController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _dataSource = Get.find<RemoteDataSource>();  // Get.find()로 가져오기
     _initializeControllers();
-    // 초기 날짜 유효성 검사
-    validateDate(dayOfBirthController.text);
+  }
+
+  @override
+  Future<void> onReady() async {
+    super.onReady();
+    await _getMyInformation();
+  }
+
+  Future<void> _getMyInformation() async {
+    try {
+      final request = await MyRouter.getMyInformation();
+      final response = await _dataSource.execute(request);
+
+      if (response == null) {
+        throw Exception('서버에서 응답을 받지 못했습니다. 잠시 후 다시 시도해주세요.');
+      }
+
+      personalInfo.value = response;  
+      _updateControllersFromModel();    
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  void _updateControllersFromModel() {
+    if (personalInfo.value != null) {
+      final info = personalInfo.value!;
+      nameController.text = info.name;
+      dayOfBirthController.text = info.dayOfBirth;
+      mySalaryController.text = info.myMonthlySalary.toString();
+      familySalaryController.text = info.familyMemberMonthlySalary.toString();
+      familyCountController.text = info.allFamilyMemberCount.toString();
+      carPriceController.text = info.carPrice.toString();
+      assetPriceController.text = info.assetPrice.toString();
+      hasHouse.value = info.hasCar; // 임시로 hasCar를 hasHouse로 사용
+      selectedPosition.value = info.position == 'YOUNG_MAN';
+    }
+  }
+
+  void _initializeControllers() {
+    nameController = TextEditingController();
+    dayOfBirthController = TextEditingController();
+    mySalaryController = TextEditingController();
+    familySalaryController = TextEditingController();
+    familyCountController = TextEditingController();
+    carPriceController = TextEditingController();
+    assetPriceController = TextEditingController();
+
     // 날짜 변경 리스너 추가
     dayOfBirthController.addListener(() {
       validateDate(dayOfBirthController.text);
     });
   }
 
-  void _initializeControllers() {
-    dayOfBirthController = TextEditingController(text: '1999.01.05');
-    mySalaryController = TextEditingController(text: '0');
-    familySalaryController = TextEditingController(text: '0');
-    familyCountController = TextEditingController(text: '0');
-    carPriceController = TextEditingController(text: '0');
-    assetPriceController = TextEditingController(text: '0');
-  }
-
   @override
   void onClose() {
+    nameController.dispose();
     dayOfBirthController.dispose();
     mySalaryController.dispose();
     familySalaryController.dispose();
@@ -52,7 +98,28 @@ class MyController extends GetxController {
   }
 
   void saveChanges() {
-    // TODO: API 호출 등 저장 로직 구현
+    if (personalInfo.value != null) {
+      debugPrint('저장 전 이름: ${personalInfo.value!.name}');
+      debugPrint('저장할 이름: ${nameController.text}');
+      
+      final updatedInfo = PersonalInformationModel(
+        name: nameController.text,
+        dayOfBirth: dayOfBirthController.text,
+        likingDistrictIds: personalInfo.value!.likingDistrictIds,
+        livingDistrictId: personalInfo.value!.livingDistrictId,
+        myMonthlySalary: int.tryParse(mySalaryController.text) ?? 0,
+        familyMemberMonthlySalary: int.tryParse(familySalaryController.text) ?? 0,
+        allFamilyMemberCount: int.tryParse(familyCountController.text) ?? 0,
+        position: selectedPosition.value ? 'YOUNG_MAN' : 'NEWLYWED',
+        hasCar: hasHouse.value,
+        carPrice: int.tryParse(carPriceController.text) ?? 0,
+        assetPrice: int.tryParse(assetPriceController.text) ?? 0,
+      );
+      
+      personalInfo.update((_) => updatedInfo);  // update() 메서드 사용
+      debugPrint('저장 후 이름: ${personalInfo.value!.name}');
+    }
+    
     isEditMode.value = false;
     Get.snackbar(
       '알림',
@@ -81,14 +148,12 @@ class MyController extends GetxController {
       return false;
     }
     
-    // 입력된 날짜 문자열에서 숫자만 추출
     final numbers = date.replaceAll(RegExp(r'[^0-9]'), '');
     if (numbers.length != 8) {
       canEdit.value = false;
       return false;
     }
     
-    // YYYYMMDD 형식 검증
     final year = int.tryParse(numbers.substring(0, 4));
     final month = int.tryParse(numbers.substring(4, 6));
     final day = int.tryParse(numbers.substring(6, 8));
@@ -98,7 +163,6 @@ class MyController extends GetxController {
       return false;
     }
     
-    // 유효한 날짜인지 검증
     final isValid = year >= 1900 && year <= 2100 && 
                    month >= 1 && month <= 12 && 
                    day >= 1 && day <= 31;
@@ -109,11 +173,9 @@ class MyController extends GetxController {
 
   String formatDate(String date) {
     if (date.isEmpty) return '';
-    // 입력된 날짜 문자열에서 숫자만 추출
     final numbers = date.replaceAll(RegExp(r'[^0-9]'), '');
     if (numbers.length != 8) return date;
     
-    // YYYYMMDD 형식으로 변환
     final year = numbers.substring(0, 4);
     final month = numbers.substring(4, 6);
     final day = numbers.substring(6, 8);
