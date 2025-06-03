@@ -4,24 +4,31 @@ import '../today/today_view.dart';
 import '../map/map_view.dart';
 import '../announcement/announcement_view.dart';
 import '../my/my_view.dart';
+import '../my/my_controller.dart';
 
 class HomeController extends GetxController {
   int currentIndex = 0;
-  late List<Widget> pages;
+  late final List<Widget> pages;
 
   @override
   void onInit() {
     super.onInit();
+    
+    // MyController 등록
+    Get.put(MyController());
+    
     pages = [
       TodayView(),
       const MapView(),
       const AnnouncementView(),
-      MyView(),
+      const MyView(),
     ];
   }
 
   void changePage(int index) {
-    currentIndex = index;
-    update();
+    if (currentIndex != index) {
+      currentIndex = index;
+      update();
+    }
   }
 } 
