@@ -1,5 +1,6 @@
 enum SecureStorageKey {
   googleAccessToken,
+  googleIdToken,
 }
 
 extension SecureStorageKeyExtension on SecureStorageKey {
@@ -7,6 +8,8 @@ extension SecureStorageKeyExtension on SecureStorageKey {
     switch (this) {
       case SecureStorageKey.googleAccessToken:
         return 'google_access_token';
+      case SecureStorageKey.googleIdToken:
+        return 'google_id_token';
     }
   }
 } 

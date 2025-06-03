@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    
     <application
         android:label="easip"
         android:name="${applicationName}"
@@ -7,6 +10,9 @@
         <meta-data
             android:name="com.google.android.gms.auth.CLIENT_ID"
             android:value="836328638609-f5f6pbblpqt07cb1u48a178ivhd182rk.apps.googleusercontent.com" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

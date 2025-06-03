@@ -1,11 +1,17 @@
 import 'package:dio/dio.dart';
+import 'package:get/get.dart';
+import 'package:flutter/foundation.dart';
 import 'api_request.dart';
 import 'network_exceptions.dart';
 
-final class RemoteDataSource {
+class RemoteDataSource extends GetxService {
+  static RemoteDataSource get to => Get.find<RemoteDataSource>();
+
   late final Dio _dio;
 
-  RemoteDataSource() {
+  @override
+  void onInit() {
+    super.onInit();
     _dio = Dio(
       BaseOptions(
         connectTimeout: const Duration(seconds: 5),
@@ -26,6 +32,8 @@ final class RemoteDataSource {
 
   Future<T?> execute<T>(ApiRequest<T> request) async {
     try {
+      debugPrint('RemoteDataSource: Executing ${request.method} request to ${request.url}');
+      
       final response = await _dio.request(
         request.url,
         data: request.body,
@@ -37,10 +45,20 @@ final class RemoteDataSource {
         ),
       );
       
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw HttpException(
+          '서버 에러: ${response.statusCode}',
+          statusCode: response.statusCode,
+          data: response.data,
+        );
+      }
+
       return request.parseResponse(response.data);
     } on DioException catch (e) {
+      debugPrint('RemoteDataSource: Network error - ${e.message}');
       throw _handleError(e);
     } catch (e) {
+      debugPrint('RemoteDataSource: Error - $e');
       rethrow;
     }
   }

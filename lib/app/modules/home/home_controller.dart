@@ -16,7 +16,7 @@ class HomeController extends GetxController {
       TodayView(),
       const MapView(),
       const AnnouncementView(),
-      const MyView(),
+      MyView(),
     ];
   }
 
