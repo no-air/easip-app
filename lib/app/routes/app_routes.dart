@@ -4,8 +4,9 @@ class Routes {
   static const home = '/home';
   static const onboarding = '/onboarding';
   static const signin = '/sign-in';
+  static const post = '/post/:postId';
 }
 
 class AppRoutes {
   static const initial = Routes.splash;
-} 
+}

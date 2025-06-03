@@ -13,7 +13,7 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     pages = [
-      const TodayView(),
+      TodayView(),
       const MapView(),
       const AnnouncementView(),
       MyView(),
