@@ -14,7 +14,6 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     
-    // MyController 등록
     Get.put(MyController());
     
     pages = [
