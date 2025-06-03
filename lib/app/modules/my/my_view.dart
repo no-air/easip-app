@@ -175,14 +175,6 @@ class MyView extends GetView<MyController> {
           values: [controller.getDistrictName(null)],
         ),
         MyToggleRow(
-          label: '주택여부',
-          options: const ['무주택', '주택보유'],
-          currentValue: controller.hasHouse.value ? 1 : 0,
-          onChanged: (value) => controller.updateHasHouse(value == 1),
-          isEditMode: controller.isEditMode.value,
-          getDisplayText: (value) => value == 1 ? '주택보유' : '무주택',
-        ),
-        MyToggleRow(
           label: '전형',
           options: const ['신혼부부', '청년'],
           currentValue: controller.selectedPosition.value ? 1 : 0,
