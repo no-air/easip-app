@@ -12,7 +12,7 @@ import 'app_routes.dart';
 class AppPages {
   static final pages = [
     GetPage(
-      name: Routes.initial,
+      name: Routes.splash,
       page: () => const SplashView(),
       binding: SplashBinding(),
     ),
