@@ -1,10 +1,6 @@
-import 'dart:math';
-
 import 'package:easip_app/app/modules/account/token_storage.dart';
 import 'package:get/get.dart';
 import '../../services/auth_service.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:easip_app/app/core/network/router/auth_router.dart';
 import 'package:easip_app/app/core/network/data_source.dart';
 import 'package:dio/dio.dart';
