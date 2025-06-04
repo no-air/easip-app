@@ -1,10 +1,6 @@
-import 'dart:math';
-
 import 'package:easip_app/app/modules/account/token_storage.dart';
 import 'package:get/get.dart';
 import '../../services/auth_service.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:easip_app/app/core/network/router/auth_router.dart';
 import 'package:easip_app/app/core/network/data_source.dart';
 import 'package:dio/dio.dart';
@@ -69,7 +65,7 @@ class SignInController extends GetxController {
     } on DioException catch (e) {
       final errorMessage = _handleDioError(e);
       _showErrorSnackbar('로그인 실패', errorMessage);
-    } catch (e, stackTrace) {
+    } catch (e, _) {
       _showErrorSnackbar(
         '오류 발생',
         '알 수 없는 오류가 발생했습니다: ${e.toString().split('.').first}', // Show first sentence only
@@ -120,10 +116,9 @@ class SignInController extends GetxController {
         throw Exception('서버에서 응답을 받지 못했습니다. 잠시 후 다시 시도해주세요.');
       }
 
-      final authResponse =
-          response is AuthResponse
-              ? response
-              : AuthResponse.fromJson(response as Map<String, dynamic>);
+      final authResponse = AuthResponse.fromJson(
+        response as Map<String, dynamic>,
+      );
 
       await _saveAndVerifyTokens(authResponse);
       _navigateAfterLogin();
