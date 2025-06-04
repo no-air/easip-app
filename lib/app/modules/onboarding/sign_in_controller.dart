@@ -116,9 +116,11 @@ class SignInController extends GetxController {
         throw Exception('서버에서 응답을 받지 못했습니다. 잠시 후 다시 시도해주세요.');
       }
 
-      final authResponse = AuthResponse.fromJson(
-        response as Map<String, dynamic>,
-      );
+      final authResponse =
+          // ignore: unnecessary_type_check
+          response is AuthResponse
+              ? response
+              : AuthResponse.fromJson(response as Map<String, dynamic>);
 
       await _saveAndVerifyTokens(authResponse);
       _navigateAfterLogin();

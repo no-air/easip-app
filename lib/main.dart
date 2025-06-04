@@ -1,3 +1,4 @@
+import 'package:easip_app/app/core/config/env_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -8,18 +9,18 @@ import 'app/routes/app_routes.dart';
 import 'app/theme/app_colors.dart';
 import 'app/services/auth_service.dart';
 
-
 WebViewEnvironment? webViewEnvironment;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+  await EnvConfig().initialize(Environment.dev);
 
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
     await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
   }
   Get.put(AuthService());
-  
+
   runApp(const App());
 }
 
