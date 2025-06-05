@@ -1,3 +1,4 @@
+import 'package:easip_app/app/modules/account/token_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -41,6 +42,14 @@ class _WebviewState extends State<Webview> {
       );
     }
 
+    Future<void> onLoadStop(InAppWebViewController controller, Uri? url) async {
+      var accessToken = await TokenStorage.accessToken;
+
+      controller.evaluateJavascript(
+        source: "window.accessToken = '$accessToken';",
+      );
+    }
+
     if (url.isEmpty) {
       return const Center(child: Text("No URL provided"));
     }
@@ -61,6 +70,7 @@ class _WebviewState extends State<Webview> {
             clearCache: true,
           ),
           onWebViewCreated: onWebViewCreated,
+          onLoadStop: onLoadStop,
           onConsoleMessage: (_, consoleMessage) {
             if (kDebugMode) {
               print(
