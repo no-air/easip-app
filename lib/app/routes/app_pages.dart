@@ -10,6 +10,8 @@ import '../modules/onboarding/sign_in_view.dart';
 import '../modules/onboarding/sign_in_binding.dart';
 import '../modules/my/my_view.dart';
 import '../modules/my/my_binding.dart';
+import '../modules/announcement/announcement_list_view.dart';
+import '../modules/announcement/announcement_list_binding.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -40,5 +42,10 @@ class AppPages {
       binding: MyBinding(),
     ),
     GetPage(name: Routes.post, page: () => PostView()),
+    GetPage(
+      name: Routes.announcementList, 
+      page: () => const AnnouncementListView(),
+      binding: AnnouncementListBinding(),
+    ),
   ];
-} 
+}

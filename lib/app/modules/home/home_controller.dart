@@ -2,9 +2,8 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../today/today_view.dart';
 import '../map/map_view.dart';
-import '../announcement/announcement_view.dart';
+import '../announcement/announcement_list_view.dart';
 import '../my/my_view.dart';
-import '../my/my_controller.dart';
 
 class HomeController extends GetxController {
   int currentIndex = 0;
@@ -14,12 +13,13 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     
-    Get.put(MyController());
+    // Get.put(MyController());
+    // Get.put(AnnouncementListController());
     
     pages = [
       TodayView(),
       const MapView(),
-      const AnnouncementView(),
+      const AnnouncementListView(),
       const MyView(),
     ];
   }
