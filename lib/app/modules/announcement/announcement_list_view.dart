@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'announcement_list_controller.dart';
 import '../../core/utils/screen_utils.dart';
-import 'model/announcement.dart';
+import 'model/announcement_response.dart';
 
 class AnnouncementListView extends GetView<AnnouncementListController> {
   const AnnouncementListView({super.key});

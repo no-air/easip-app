@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'model/announcement.dart';
+import 'model/announcement_response.dart';
 import 'package:flutter/material.dart';
 import '../../core/network/data_source.dart';
 import '../../core/network/router/easip_router.dart';
@@ -127,36 +127,30 @@ class AnnouncementListController extends GetxController {
     searchedAnnouncements.value = announcements.value;
   }
 
-  void toggleBookmark(String postId) {
+  Future<void> toggleBookmark(String postId) async {
     if (announcements.value == null) return;
 
     final index = announcements.value!.results.indexWhere(
       (a) => a.postId == postId,
     );
-    if (index != -1) {
-      final updatedAnnouncements = AnnouncementResponse(
-        currentPage: announcements.value!.currentPage,
-        totalPage: announcements.value!.totalPage,
-        itemPerPage: announcements.value!.itemPerPage,
-        hasNext: announcements.value!.hasNext,
-        results: List.from(announcements.value!.results),
-      );
-      updatedAnnouncements.results[index].isPushAlarmRegistered.value =
-          !updatedAnnouncements.results[index].isPushAlarmRegistered.value;
-      announcements.value = updatedAnnouncements;
 
-      // 검색 결과에도 동일하게 적용
+    final request = await EasipRouter.putBookmark(houseId: postId);
+    final response = await _dataSource.execute(request);
+
+    // API 응답이 성공일 때만 상태 업데이트
+    if (response?.success ?? false) {
+      // 원본 데이터 업데이트
+      announcements.value!.results[index].isPushAlarmRegistered.value = 
+          !announcements.value!.results[index].isPushAlarmRegistered.value;
+
+      // 검색 결과가 있다면 동일한 공고 업데이트
       if (searchedAnnouncements.value != null) {
         final searchIndex = searchedAnnouncements.value!.results.indexWhere(
           (a) => a.postId == postId,
         );
         if (searchIndex != -1) {
-          searchedAnnouncements
-                  .value!
-                  .results[searchIndex]
-                  .isPushAlarmRegistered
-                  .value =
-              updatedAnnouncements.results[index].isPushAlarmRegistered.value;
+          searchedAnnouncements.value!.results[searchIndex].isPushAlarmRegistered.value = 
+              announcements.value!.results[index].isPushAlarmRegistered.value;
         }
       }
     }

@@ -100,32 +100,12 @@ class Announcement {
     final now = DateTime.now();
     return now.isAfter(applicationStart) && now.isBefore(applicationEnd);
   }
-
-  // 청약 상태 확인 (subscriptionState 기준)
-  bool get isSubscriptionActive => subscriptionState == "청약중";
-  
-  // 청약 예정 상태 확인
-  bool get isSubscriptionScheduled => subscriptionState == "청약예정";
   
   // 푸시 알림 등록 여부
   bool get hasPushAlarm => isPushAlarmRegistered.value;
 
   // 이미지 URL이 있는지 확인
   bool get hasImage => thumbnailUrl.isNotEmpty;
-  
-  // 청약 상태에 따른 표시 텍스트
-  // String get statusDisplayText {
-  //   switch (subscriptionState) {
-  //     case "청약중":
-  //       return "접수중";
-  //     case "청약예정":
-  //       return "예정";
-  //     case "청약마감":
-  //       return "마감";
-  //     default:
-  //       return subscriptionState;
-  //   }
-  // }
   
   // 청약 상태에 따른 색상
   // Color get statusColor {
