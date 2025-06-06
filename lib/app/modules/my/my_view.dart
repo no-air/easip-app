@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'my_controller.dart';
 import 'my_info_row.dart';
+import '../../components//app/custom_alert.dart';
+import '../..//routes/app_routes.dart';
 
 class MyView extends GetView<MyController> {
   const MyView({super.key});
@@ -60,7 +62,8 @@ class MyView extends GetView<MyController> {
                 builder: (controller) => Column(
                   children: [
                     if (controller.isEditMode.value)
-                      SizedBox(
+                      Container(
+                        alignment: Alignment.center,
                         child: TextField(
                           controller: controller.nameController,
                           textAlign: TextAlign.center,
@@ -69,6 +72,7 @@ class MyView extends GetView<MyController> {
                             fontFamily: 'plMedium',
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            height: 1.2,
                           ),
                           decoration: const InputDecoration(
                             isDense: true,
@@ -76,17 +80,19 @@ class MyView extends GetView<MyController> {
                             border: InputBorder.none,
                             enabledBorder: InputBorder.none,
                             focusedBorder: InputBorder.none,
+                            isCollapsed: true,
                           ),
                         ),
                       )
                     else
                       Text(
-                        controller.personalInfo.value?.name ?? '',
+                        controller.nameController.text,
                         style: const TextStyle(
                           color: Colors.black,
                           fontFamily: 'plMedium',
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          height: 1.2,
                         ),
                       ),
                   ],
@@ -126,7 +132,7 @@ class MyView extends GetView<MyController> {
           Row(
             children: [
               const Text(
-                '20개',
+                '',
                 style: TextStyle(
                   fontFamily: 'Pretendard',
                   fontSize: 14,
@@ -159,65 +165,70 @@ class MyView extends GetView<MyController> {
         const SizedBox(height: 10),
         Divider(height: 1, thickness: 1, color: Colors.grey[300]!),
         const SizedBox(height: 10),
-        MyInfoRow(
-          label: '생년월일',
-          controller: controller.dayOfBirthController,
-          inputType: TextInputType.datetime,
-          isEditMode: controller.isEditMode.value,
-          formatValue: (value) => controller.formatDate(value),
+        GetX<MyController>(
+          builder: (controller) => Column(
+            children: [
+              MyInfoRow(
+                label: '생년월일',
+                controller: controller.dayOfBirthController,
+                inputType: TextInputType.datetime,
+                isEditMode: controller.isEditMode.value,
+                formatValue: (value) => controller.formatDate(value),
+              ),
+              MyChipRow(
+                label: '선호지역',
+                values: controller.getDistrictNames(null),
+              ),
+              MyChipRow(
+                label: '거주지역',
+                values: [controller.getDistrictName(null)],
+              ),
+              MyToggleRow(
+                label: '전형',
+                options: const ['신혼부부', '청년'],
+                currentValue: controller.selectedPosition.value ? 1 : 0,
+                onChanged: (value) => controller.updatePosition(value == 1),
+                isEditMode: controller.isEditMode.value,
+                getDisplayText: (value) => value == 1 ? '신혼부부' : '청년',
+              ),
+              MyInfoRow(
+                label: '월소득',
+                controller: controller.mySalaryController,
+                inputType: TextInputType.number,
+                isEditMode: controller.isEditMode.value,
+                formatValue: (value) => controller.formatPrice(int.tryParse(value)),
+              ),
+              MyInfoRow(
+                label: '가족 월소득',
+                controller: controller.familySalaryController,
+                inputType: TextInputType.number,
+                isEditMode: controller.isEditMode.value,
+                formatValue: (value) => controller.formatPrice(int.tryParse(value)),
+              ),
+              MyInfoRow(
+                label: '세대원 수',
+                controller: controller.familyCountController,
+                inputType: TextInputType.number,
+                isEditMode: controller.isEditMode.value,
+                formatValue: (value) => value,
+              ),
+              MyInfoRow(
+                label: '자동차가액',
+                controller: controller.carPriceController,
+                inputType: TextInputType.number,
+                isEditMode: controller.isEditMode.value,
+                formatValue: (value) => controller.formatPrice(int.tryParse(value)),
+              ),
+              MyInfoRow(
+                label: '재산가액',
+                controller: controller.assetPriceController,
+                inputType: TextInputType.number,
+                isEditMode: controller.isEditMode.value,
+                formatValue: (value) => controller.formatPrice(int.tryParse(value)),
+              ),
+            ],
+          ),
         ),
-        MyChipRow(
-          label: '선호지역',
-          values: controller.getDistrictNames(null),
-        ),
-        MyChipRow(
-          label: '거주지역',
-          values: [controller.getDistrictName(null)],
-        ),
-        MyToggleRow(
-          label: '전형',
-          options: const ['신혼부부', '청년'],
-          currentValue: controller.selectedPosition.value ? 1 : 0,
-          onChanged: (value) => controller.updatePosition(value == 1),
-          isEditMode: controller.isEditMode.value,
-          getDisplayText: (value) => value == 1 ? '신혼부부' : '청년',
-        ),
-        MyInfoRow(
-          label: '월소득',
-          controller: controller.mySalaryController,
-          inputType: TextInputType.number,
-          isEditMode: controller.isEditMode.value,
-          formatValue: (value) => controller.formatPrice(int.tryParse(value)),
-        ),
-        MyInfoRow(
-          label: '가족 월소득',
-          controller: controller.familySalaryController,
-          inputType: TextInputType.number,
-          isEditMode: controller.isEditMode.value,
-          formatValue: (value) => controller.formatPrice(int.tryParse(value)),
-        ),
-        MyInfoRow(
-          label: '세대원 수',
-          controller: controller.familyCountController,
-          inputType: TextInputType.number,
-          isEditMode: controller.isEditMode.value,
-          formatValue: (value) => value,
-        ),
-        MyInfoRow(
-          label: '자동차가액',
-          controller: controller.carPriceController,
-          inputType: TextInputType.number,
-          isEditMode: controller.isEditMode.value,
-          formatValue: (value) => controller.formatPrice(int.tryParse(value)),
-        ),
-        MyInfoRow(
-          label: '재산가액',
-          controller: controller.assetPriceController,
-          inputType: TextInputType.number,
-          isEditMode: controller.isEditMode.value,
-          formatValue: (value) => controller.formatPrice(int.tryParse(value)),
-        ),
-        
       ],
     );
   }

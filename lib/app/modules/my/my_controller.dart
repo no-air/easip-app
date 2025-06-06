@@ -25,7 +25,7 @@ class MyController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _dataSource = Get.find<RemoteDataSource>();  // Get.find()로 가져오기
+    _dataSource = Get.find<RemoteDataSource>(); 
     _initializeControllers();
   }
 
@@ -61,7 +61,6 @@ class MyController extends GetxController {
       familyCountController.text = info.allFamilyMemberCount.toString();
       carPriceController.text = info.carPrice.toString();
       assetPriceController.text = info.assetPrice.toString();
-      hasHouse.value = info.hasCar; // 임시로 hasCar를 hasHouse로 사용
       selectedPosition.value = info.position == 'YOUNG_MAN';
     }
   }
@@ -99,9 +98,6 @@ class MyController extends GetxController {
 
   void saveChanges() {
     if (personalInfo.value != null) {
-      debugPrint('저장 전 이름: ${personalInfo.value!.name}');
-      debugPrint('저장할 이름: ${nameController.text}');
-      
       final updatedInfo = PersonalInformationModel(
         name: nameController.text,
         dayOfBirth: dayOfBirthController.text,
@@ -111,25 +107,25 @@ class MyController extends GetxController {
         familyMemberMonthlySalary: int.tryParse(familySalaryController.text) ?? 0,
         allFamilyMemberCount: int.tryParse(familyCountController.text) ?? 0,
         position: selectedPosition.value ? 'YOUNG_MAN' : 'NEWLYWED',
-        hasCar: hasHouse.value,
+        hasCar: (carPriceController.text == '0') ? false: true,
         carPrice: int.tryParse(carPriceController.text) ?? 0,
         assetPrice: int.tryParse(assetPriceController.text) ?? 0,
       );
       
-      personalInfo.update((_) => updatedInfo);  // update() 메서드 사용
-      debugPrint('저장 후 이름: ${personalInfo.value!.name}');
+      personalInfo.value = updatedInfo;
+      nameController.text = updatedInfo.name;
     }
     
     isEditMode.value = false;
-    Get.snackbar(
-      '알림',
-      '정보가 저장되었습니다.',
-      snackPosition: SnackPosition.BOTTOM,
-    );
+    // Get.snackbar(
+    //   '알림',
+    //   '정보가 저장되었습니다.',
+    //   snackPosition: SnackPosition.BOTTOM,
+    // );
   }
 
-  void updateHasHouse(bool value) {
-    hasHouse.value = value;
+  void updateDayOfBirth(String value) {
+    dayOfBirthController.text = value;
   }
 
   void updatePosition(bool value) {
