@@ -112,38 +112,41 @@ class MyView extends GetView<MyController> {
   }
 
   Widget _buildInterestedSection() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[300]!),
-        borderRadius: BorderRadius.circular(25),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            '관심 공고',
-            style: TextStyle(
-              fontFamily: 'Pretendard',
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          Row(
-            children: [
-              const Text(
-                '',
-                style: TextStyle(
-                  fontFamily: 'Pretendard',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
+    return GestureDetector(
+      onTap: () => Get.toNamed('/alarm-registered'),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey[300]!),
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              '관심 공고',
+              style: TextStyle(
+                fontFamily: 'Pretendard',
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
               ),
-              const SizedBox(width: 8),
-              ImageAsset(imagePath:'assets/icon/subtract.svg', width: 18, height: 18),
-            ],
-          ),
-        ],
+            ),
+            Row(
+              children: [
+                const Text(
+                  '',
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                ImageAsset(imagePath:'assets/icon/subtract.svg', width: 18, height: 18),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:easip_app/app/modules/announcement/alarm_registered_list_binding.dart';
 import 'package:easip_app/app/modules/post/post_view.dart';
 import 'package:get/get.dart';
 import '../modules/splash/splash_binding.dart';
@@ -10,6 +11,7 @@ import '../modules/onboarding/sign_in_view.dart';
 import '../modules/onboarding/sign_in_binding.dart';
 import '../modules/my/my_view.dart';
 import '../modules/my/my_binding.dart';
+import '../modules/announcement/alarm_registered_list_view.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -40,5 +42,10 @@ class AppPages {
       binding: MyBinding(),
     ),
     GetPage(name: Routes.post, page: () => PostView()),
+    GetPage(
+      name: Routes.alarmRegistered,
+      page: () => const AlarmRegisteredListView(),
+      binding: AlarmRegisteredListBinding(),
+    ),
   ];
 } 

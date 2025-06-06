@@ -50,6 +50,34 @@ class EasipRouter {
       fromJson: AnnouncementResponse.fromJson,
     );
   }
+
+  static Future<ApiRequest<AnnouncementResponse>> getRegisteredAnnouncements({
+    String? keyword,
+    int page = 1,
+    int size = 10,
+  }) async {
+    final token = await TokenStorage.accessToken;
+    if (token == null) {
+      throw Exception('Access token not found');
+    }
+
+    final queryParams = {
+      'page': page,
+      'size': size,
+      if (keyword != null) 'keyword': keyword,
+    };
+
+    return EasipRequest<AnnouncementResponse>(
+      path: '/v1/me/like/posts',
+      method: HttpMethod.get,
+      headers: {
+        'accept': 'application/json',
+        'X-AUTH-TOKEN': 'token',
+      },
+      queryParameters: queryParams,
+      fromJson: AnnouncementResponse.fromJson,
+    );
+  }
 }
 
 class EasipRequest<T> extends ApiRequest<T> {
