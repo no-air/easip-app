@@ -1,7 +1,9 @@
 import 'package:easip_app/app/core/network/api_request.dart';
 import 'package:easip_app/app/core/config/env_config.dart';
 import 'package:easip_app/app/modules/my/models/personal_information_model.dart';
+import 'package:easip_app/app/modules/announcement/model/announcement.dart';
 import 'package:easip_app/app/modules/account/token_storage.dart';
+
 
 class EasipRouter {
   static Future<ApiRequest<PersonalInformationModel>> getMyInformation() async {
@@ -10,33 +12,66 @@ class EasipRouter {
       throw Exception('Access token not found');
     }
     
-    return MyRequest(
+    return EasipRequest<PersonalInformationModel>(
       path: '/v1/me/profile',
       method: HttpMethod.get,
       headers: {
         'accept': 'application/json',
         'X-AUTH-TOKEN': token,
       },
+      fromJson: PersonalInformationModel.fromJson,
+    );
+  }
+
+  static Future<ApiRequest<AnnouncementResponse>> getAnnouncements({
+    String? keyword,
+    int page = 1,
+    int size = 10,
+  }) async {
+    final token = await TokenStorage.accessToken;
+    if (token == null) {
+      throw Exception('Access token not found');
+    }
+
+    final queryParams = {
+      'page': page,
+      'size': size,
+      if (keyword != null) 'keyword': keyword,
+    };
+
+    return EasipRequest<AnnouncementResponse>(
+      path: '/v1/posts/list',
+      method: HttpMethod.get,
+      headers: {
+        'accept': 'application/json',
+        'X-AUTH-TOKEN': token,
+      },
+      queryParameters: queryParams,
+      fromJson: AnnouncementResponse.fromJson,
     );
   }
 }
 
-
-class MyRequest<T> extends ApiRequest<T> {
+class EasipRequest<T> extends ApiRequest<T> {
   final String _path;
   final HttpMethod _method;
   final Map<String, dynamic>? _body;
   final Map<String, String>? _headers;
+  final Map<String, dynamic>? _queryParameters;
+  final T Function(Map<String, dynamic>) fromJson;
 
-  MyRequest({
+  EasipRequest({
     required String path,
     required HttpMethod method,
+    required this.fromJson,
     Map<String, dynamic>? body,
     Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
   }) : _path = path,
        _method = method,
        _body = body,
-       _headers = headers;
+       _headers = headers,
+       _queryParameters = queryParameters;
 
   @override
   String get baseUrl => EnvConfig().baseUrl;
@@ -51,23 +86,15 @@ class MyRequest<T> extends ApiRequest<T> {
   Map<String, String>? get headers => _headers;
 
   @override
-  Map<String, dynamic>? get queryParameters => null;
+  Map<String, dynamic>? get queryParameters => _queryParameters;
 
   @override
   Map<String, dynamic>? get body => _body;
 
   @override
   T parseResponse(dynamic data) {
-    if (data == null) return null as T;
-    
-    if (T == PersonalInformationModel && data is Map<String, dynamic>) {
-      return PersonalInformationModel.fromJson(data) as T;
-    }
-    
-    if (data is T) {
-      return data;
-    }
-    
-    throw Exception('Invalid response type: expected $T but got ${data.runtimeType}');
+    if (data == null) throw Exception('Response data is null');
+    if (data is! Map<String, dynamic>) throw Exception('Invalid response format');
+    return fromJson(data);
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'announcement_list_controller.dart';
 import '../../core/utils/screen_utils.dart';
+import 'model/announcement.dart';
 
 class AnnouncementListView extends GetView<AnnouncementListController> {
   const AnnouncementListView({super.key});
@@ -66,45 +67,59 @@ class AnnouncementListView extends GetView<AnnouncementListController> {
 
 
                 Expanded(
-                  child: Obx(() {
-                    if (controller.isLoading.value) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: (ScrollNotification scrollInfo) {
+                      if (scrollInfo is ScrollEndNotification) {
+                        if (scrollInfo.metrics.pixels >= scrollInfo.metrics.maxScrollExtent * 0.8) {
+                          if (controller.searchedAnnouncements.value?.hasNext ?? false) {
+                            controller.getNextAnnouncements();
+                          }
+                        }
+                      }
+                      return true;
+                    },
+                    child: Obx(() {
+                      if (controller.isLoading.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                    if (controller.filteredAnnouncements.isEmpty) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.search_off,
-                              size: 64,
-                              color: Colors.grey[400],
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              controller.searchQuery.value.isNotEmpty
-                                  ? '검색 결과가 없습니다.'
-                                  : '공고가 없습니다.',
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-
-                    return ListView.builder(
-                      padding: EdgeInsets.zero,
-                      itemCount: controller.filteredAnnouncements.length,
-                      itemBuilder: (context, index) {
-                        return AnnouncementRow(
-                          announcement: controller.filteredAnnouncements[index],
-                          onBookmarkToggle:
-                              () => controller.toggleBookmark(index),
+                      if (controller.searchedAnnouncements.value?.results.isEmpty ?? true) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.search_off,
+                                size: 64,
+                                color: Colors.grey[400],
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                controller.searchQuery.value.isNotEmpty
+                                    ? '검색 결과가 없습니다.'
+                                    : '공고가 없습니다.',
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                            ],
+                          ),
                         );
-                      },
-                    );
-                  }),
+                      }
+
+                      return ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: controller.searchedAnnouncements.value?.results.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final announcement = controller.searchedAnnouncements.value?.results[index];
+                          if (announcement == null) return const SizedBox.shrink();
+                          
+                          return AnnouncementRow(
+                            announcement: announcement,
+                            onBookmarkToggle: () => controller.toggleBookmark(announcement.postId),
+                          );
+                        },
+                      );
+                    }),
+                  ),
                 ),
               ],
             ),
@@ -134,18 +149,34 @@ class AnnouncementRow extends StatelessWidget {
         children: [
           Stack(
             children: [
-              Container(
-                width: ScreenUtils.ratioWidth(context, 65),
-                height: ScreenUtils.ratioWidth(context, 65),
+              SizedBox(
+                width: ScreenUtils.ratioWidth(context, 75),
+                height: ScreenUtils.ratioWidth(context, 75),
                 child: ClipRRect(
-                  child: Container(
-                    color: Colors.grey[300],
-                    child: Icon(
-                      Icons.business,
-                      size: 30,
-                      color: Colors.grey[600],
-                    ),
-                  ),
+                  borderRadius: BorderRadius.circular(4),
+                  child: announcement.hasImage
+                      ? Image.network(
+                          announcement.thumbnailUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey[300],
+                              child: Icon(
+                                Icons.business,
+                                size: 30,
+                                color: Colors.grey[600],
+                              ),
+                            );
+                          },
+                        )
+                      : Container(
+                          color: Colors.grey[300],
+                          child: Icon(
+                            Icons.business,
+                            size: 30,
+                            color: Colors.grey[600],
+                          ),
+                        ),
                 ),
               ),
               Positioned(
@@ -156,12 +187,12 @@ class AnnouncementRow extends StatelessWidget {
                     horizontal: 6,
                     vertical: 2,
                   ),
-                  decoration: BoxDecoration(
-                    color: announcement.isActive ? Colors.blue : Colors.grey,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+                  // decoration: BoxDecoration(
+                  //   color: announcement.isActive ? Colors.blue : Colors.grey,
+                  //   borderRadius: BorderRadius.circular(4),
+                  // ),
                   child: Text(
-                    announcement.isActive ? '접수중' : '마감',
+                    announcement.subscriptionState,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 10,
@@ -202,7 +233,7 @@ class AnnouncementRow extends StatelessWidget {
               icon: Icon(
                 Icons.bookmark_border,
                 color:
-                    announcement.isBookmarked.value
+                    announcement.isPushAlarmRegistered.value
                         ? Colors.red
                         : Colors.grey[400],
               ),
@@ -211,36 +242,5 @@ class AnnouncementRow extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class Announcement {
-  final String postId;
-  final String houseThumbnailUrl;
-  final String title;
-  final String applicationStartDate;
-  final String applicationEndDate;
-  final int numberOfUnitsRecruiting;
-  RxBool isBookmarked;
-
-  Announcement({
-    required this.postId,
-    required this.houseThumbnailUrl,
-    required this.title,
-    required this.applicationStartDate,
-    required this.applicationEndDate,
-    required this.numberOfUnitsRecruiting,
-    RxBool? isBookmarked,
-  }) : isBookmarked = isBookmarked ?? false.obs;
-
-  String get periodText => "접수일 $applicationStartDate ~ $applicationEndDate";
-  String get recruitingText => "모집호수 $numberOfUnitsRecruiting";
-  bool get isActive {
-    try {
-      final endDate = DateTime.parse(applicationEndDate);
-      return DateTime.now().isBefore(endDate);
-    } catch (e) {
-      return true;
-    }
   }
 }

@@ -6,7 +6,6 @@ class Routes {
   static const signin = '/sign-in';
   static const post = '/post/:postId';
   static const my = '/my';
-  static const announcementList = '/announcement-list';
 }
 
 class AppRoutes {
