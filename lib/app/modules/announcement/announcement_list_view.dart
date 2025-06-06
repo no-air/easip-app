@@ -79,10 +79,6 @@ class AnnouncementListView extends GetView<AnnouncementListController> {
                       return true;
                     },
                     child: Obx(() {
-                      if (controller.isLoading.value) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
                       if (controller.searchedAnnouncements.value?.results.isEmpty ?? true) {
                         return Center(
                           child: Column(
@@ -107,8 +103,26 @@ class AnnouncementListView extends GetView<AnnouncementListController> {
 
                       return ListView.builder(
                         padding: EdgeInsets.zero,
-                        itemCount: controller.searchedAnnouncements.value?.results.length ?? 0,
+                        itemCount: (controller.searchedAnnouncements.value?.results.length ?? 0) + 
+                            (controller.searchedAnnouncements.value?.hasNext == true ? 1 : 0),
                         itemBuilder: (context, index) {
+                          // 마지막 아이템이고 다음 페이지가 있는 경우 로딩 인디케이터 표시
+                          if (index == (controller.searchedAnnouncements.value?.results.length ?? 0)) {
+                            return Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.grey[400]!),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+
                           final announcement = controller.searchedAnnouncements.value?.results[index];
                           if (announcement == null) return const SizedBox.shrink();
                           
