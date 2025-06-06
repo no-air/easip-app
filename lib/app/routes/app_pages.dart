@@ -1,3 +1,4 @@
+import 'package:easip_app/app/modules/house/house_view.dart';
 import 'package:easip_app/app/modules/post/post_view.dart';
 import 'package:get/get.dart';
 import '../modules/splash/splash_binding.dart';
@@ -40,5 +41,6 @@ class AppPages {
       binding: MyBinding(),
     ),
     GetPage(name: Routes.post, page: () => PostView()),
+    GetPage(name: Routes.house, page: () => HouseView())
   ];
 } 
