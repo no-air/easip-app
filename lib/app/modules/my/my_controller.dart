@@ -37,7 +37,7 @@ class MyController extends GetxController {
 
   Future<void> _getMyInformation() async {
     try {
-      final request = await MyRouter.getMyInformation();
+      final request = await EasipRouter.getMyInformation();
       final response = await _dataSource.execute(request);
 
       if (response == null) {

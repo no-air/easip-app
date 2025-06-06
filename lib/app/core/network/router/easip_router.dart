@@ -3,7 +3,7 @@ import 'package:easip_app/app/core/config/env_config.dart';
 import 'package:easip_app/app/modules/my/models/personal_information_model.dart';
 import 'package:easip_app/app/modules/account/token_storage.dart';
 
-class MyRouter {
+class EasipRouter {
   static Future<ApiRequest<PersonalInformationModel>> getMyInformation() async {
     final token = await TokenStorage.accessToken;
     if (token == null) {
