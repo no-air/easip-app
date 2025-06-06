@@ -223,32 +223,72 @@ class MyView extends GetView<MyController> {
   }
 
   Widget _buildBottomButtons() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        TextButton(
-          onPressed: () {},
-          style: _textButtonStyle,
-          child: const Text('개인 정보 약관 조회', style: _privacyButtonStyle),
+    return Builder(
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextButton(
+            onPressed: () {},
+            style: _textButtonStyle,
+            child: const Text('개인 정보 약관 조회', style: _privacyButtonStyle),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {},
+                style: _textButtonStyle,
+                child: const Text('로그아웃', style: _buttonStyle),
+              ),
+              const SizedBox(width: 24),
+              TextButton(
+                onPressed: () {
+                  CustomAlert.show(
+                    context,
+                    title: _buildWithdrawalDialogTitle(context),
+                    content: '짧은 기간 내 탈퇴와 재가입이 반복되면\n서비스 이용이 어려울 수 있어요.',
+                    confirmText: '확인',
+                    cancelText: '취소',
+                    onConfirm: () {
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   const SnackBar(content: Text('탈퇴가 완료되었습니다.')),
+                      // );
+                      Get.offAllNamed(Routes.onboarding);
+                    },
+                    onCancel: () { },
+                  );
+                },
+                style: _textButtonStyle,
+                child: const Text('회원탈퇴', style: _buttonStyle),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWithdrawalDialogTitle(BuildContext context) {
+    return RichText(
+      text: TextSpan(
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
         ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-              onPressed: () {},
-              style: _textButtonStyle,
-              child: const Text('로그아웃', style: _buttonStyle),
+        children: [
+          const TextSpan(text: '정말 '),
+          TextSpan(
+            text: '이 집',
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(width: 24),
-            TextButton(
-              onPressed: () {},
-              style: _textButtonStyle,
-              child: const Text('회원탈퇴', style: _buttonStyle),
-            ),
-          ],
-        ),
-      ],
+          ),
+          const TextSpan(text: '을 탈퇴할까요?'),
+        ],
+      ),
     );
   }
 }
