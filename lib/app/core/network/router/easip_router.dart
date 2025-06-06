@@ -1,6 +1,5 @@
 import 'package:easip_app/app/core/network/api_request.dart';
 import 'package:easip_app/app/core/config/env_config.dart';
-import 'package:easip_app/app/modules/announcement/model/bookmark_response.dart';
 import 'package:easip_app/app/modules/my/models/personal_information_model.dart';
 import 'package:easip_app/app/modules/announcement/model/announcement_response.dart';
 import 'package:easip_app/app/modules/account/token_storage.dart';
@@ -49,25 +48,6 @@ class EasipRouter {
       },
       queryParameters: queryParams,
       fromJson: AnnouncementResponse.fromJson,
-    );
-  }
-
-  static Future<ApiRequest<BookmarkResponse>> putBookmark({
-    required String houseId,
-  }) async {
-    final token = await TokenStorage.accessToken;
-    if (token == null) {
-      throw Exception('Access token not found');
-    }
-
-    return EasipRequest<BookmarkResponse>(
-      path: '/v1/houses/$houseId/bookmark',
-      method: HttpMethod.put,
-      headers: {
-        'accept': 'application/json',
-        'X-AUTH-TOKEN': token,
-      },
-      fromJson: BookmarkResponse.fromJson,
     );
   }
 }

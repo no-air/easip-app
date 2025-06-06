@@ -1,6 +1,3 @@
-import 'package:get/get.dart';
-
-// 응답 전체 래퍼 클래스
 class AnnouncementResponse {
   final int currentPage;
   final int totalPage;
@@ -48,7 +45,7 @@ class Announcement {
   final DateTime applicationStart;
   final DateTime applicationEnd;
   final int numberOfUnitsRecruiting;
-  RxBool isPushAlarmRegistered; // 서버에서 받아오지만 사용자가 변경 가능
+  final bool isPushAlarmRegistered; 
 
   Announcement({
     required this.postId,
@@ -58,8 +55,8 @@ class Announcement {
     required this.applicationStart,
     required this.applicationEnd,
     required this.numberOfUnitsRecruiting,
-    bool? isPushAlarmRegistered,
-  }) : isPushAlarmRegistered = (isPushAlarmRegistered ?? false).obs;
+    required this.isPushAlarmRegistered
+  });
 
   factory Announcement.fromJson(Map<String, dynamic> json) {
     return Announcement(
@@ -83,7 +80,7 @@ class Announcement {
       'applicationStart': applicationStart.toIso8601String(),
       'applicationEnd': applicationEnd.toIso8601String(),
       'numberOfUnitsRecruiting': numberOfUnitsRecruiting,
-      'isPushAlarmRegistered': isPushAlarmRegistered.value,
+      'isPushAlarmRegistered': isPushAlarmRegistered,
     };
   }
 
@@ -100,9 +97,6 @@ class Announcement {
     final now = DateTime.now();
     return now.isAfter(applicationStart) && now.isBefore(applicationEnd);
   }
-  
-  // 푸시 알림 등록 여부
-  bool get hasPushAlarm => isPushAlarmRegistered.value;
 
   // 이미지 URL이 있는지 확인
   bool get hasImage => thumbnailUrl.isNotEmpty;
