@@ -6,7 +6,7 @@ import '../../core/config/env_config.dart';
 
 class SplashBinding extends Bindings {
   @override
-  Future<void> dependencies() async {
+  void dependencies() {
     // EnvConfig가 이미 초기화되어 있다고 가정
     if (!EnvConfig().isInitialized) {
       throw StateError('EnvConfig must be initialized before SplashBinding');

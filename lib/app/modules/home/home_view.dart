@@ -33,7 +33,7 @@ class HomeView extends GetView<HomeController> {
             items: [
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  'assets/icon/fish.svg',
+                  'assets/icon/thumb_up.svg',
                   colorFilter: ColorFilter.mode(
                     controller.currentIndex == 0 ? AppColors.eRed : AppColors.eGray,
                     BlendMode.srcIn,
