@@ -9,6 +9,7 @@ import 'app/theme/app_colors.dart';
 import 'app/services/auth_service.dart';
 import 'app/core/network/data_source.dart';
 import 'app/core/config/env_config.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 WebViewEnvironment? webViewEnvironment;
 
