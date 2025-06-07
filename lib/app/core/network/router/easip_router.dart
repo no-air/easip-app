@@ -4,6 +4,7 @@ import 'package:easip_app/app/core/network/api_response.dart';
 import 'package:easip_app/app/modules/my/models/user_profile_response.dart';
 import 'package:easip_app/app/modules/announcement/model/announcement_response.dart';
 import 'package:easip_app/app/modules/account/token_storage.dart';
+import 'package:easip_app/app/modules/my/models/user_profile_request.dart';
 
 
 class EasipRouter {
@@ -21,6 +22,26 @@ class EasipRouter {
         'X-AUTH-TOKEN': token,
       },
       fromJson: UserProfileResponse.fromJson,
+    );
+  }
+
+   static Future<ApiRequest<ApiResponse>> putMyProfile(
+      UserProfileRequest request,
+   ) async {
+    final token = await TokenStorage.accessToken;
+    if (token == null) {
+      throw Exception('Access token not found');
+    }
+    
+    return EasipRequest<ApiResponse>(
+      path: '/v1/me/profile',
+      method: HttpMethod.put,
+      headers: {
+        'accept': 'application/json',
+        'X-AUTH-TOKEN': token,
+      },
+      body: request.toJson(),
+      fromJson: ApiResponse.fromJson,
     );
   }
 
