@@ -1,7 +1,7 @@
 import 'package:easip_app/app/core/network/router/easip_router.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'models/personal_information_model.dart';
+import 'models/user_profile_response.dart';
 import 'package:easip_app/app/core/network/data_source.dart';
 
 class MyController extends GetxController {
@@ -11,7 +11,8 @@ class MyController extends GetxController {
   final hasHouse = false.obs;
   final selectedPosition = false.obs;
   final canEdit = true.obs; 
-  final personalInfo = Rxn<PersonalInformationModel>();
+  final userProfile = Rxn<UserProfileResponse>();
+  final isDeleted = false.obs;
   
   // TextEditingControllers
   late TextEditingController nameController;
@@ -37,31 +38,48 @@ class MyController extends GetxController {
 
   Future<void> _getMyInformation() async {
     try {
-      final request = await EasipRouter.getMyInformation();
+      final request = await EasipRouter.getMyProfile();
       final response = await _dataSource.execute(request);
 
       if (response == null) {
         throw Exception('서버에서 응답을 받지 못했습니다. 잠시 후 다시 시도해주세요.');
       }
 
-      personalInfo.value = response;  
+      userProfile.value = response;  
       _updateControllersFromModel();    
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 
+  Future<void> deleteAccount() async {
+    try {
+      final request = await EasipRouter.deleteAccount();
+      final response = await _dataSource.execute(request);
+
+      if (response == null) {
+        throw Exception('서버에서 응답을 받지 못했습니다. 잠시 후 다시 시도해주세요.');
+      }
+
+      if (response.success) {
+        isDeleted.value = true;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   void _updateControllersFromModel() {
-    if (personalInfo.value != null) {
-      final info = personalInfo.value!;
+    if (userProfile.value != null) {
+      final info = userProfile.value!;
       nameController.text = info.name;
-      dayOfBirthController.text = info.dayOfBirth;
+      dayOfBirthController.text = info.formattedBirthDate.replaceAll(RegExp(r'[.\s]'), '');
       mySalaryController.text = info.myMonthlySalary.toString();
       familySalaryController.text = info.familyMemberMonthlySalary.toString();
       familyCountController.text = info.allFamilyMemberCount.toString();
       carPriceController.text = info.carPrice.toString();
       assetPriceController.text = info.assetPrice.toString();
-      selectedPosition.value = info.position == 'YOUNG_MAN';
+      selectedPosition.value = info.position == UserPosition.youngMan;
     }
   }
 
@@ -97,22 +115,23 @@ class MyController extends GetxController {
   }
 
   void saveChanges() {
-    if (personalInfo.value != null) {
-      final updatedInfo = PersonalInformationModel(
+    if (userProfile.value != null) {
+      final updatedInfo = UserProfileResponse(
         name: nameController.text,
-        dayOfBirth: dayOfBirthController.text,
-        likingDistrictIds: personalInfo.value!.likingDistrictIds,
-        livingDistrictId: personalInfo.value!.livingDistrictId,
+        likingPostCount: userProfile.value!.likingPostCount,
+        dayOfBirth: DateTime.parse(dayOfBirthController.text),
+        likingDistrictIds: userProfile.value!.likingDistrictIds,
+        livingDistrictId: userProfile.value!.livingDistrictId,
         myMonthlySalary: int.tryParse(mySalaryController.text) ?? 0,
         familyMemberMonthlySalary: int.tryParse(familySalaryController.text) ?? 0,
         allFamilyMemberCount: int.tryParse(familyCountController.text) ?? 0,
-        position: selectedPosition.value ? 'YOUNG_MAN' : 'NEWLYWED',
+        position: selectedPosition.value ? UserPosition.youngMan : UserPosition.newlywed,
         hasCar: (carPriceController.text == '0') ? false: true,
         carPrice: int.tryParse(carPriceController.text) ?? 0,
         assetPrice: int.tryParse(assetPriceController.text) ?? 0,
       );
       
-      personalInfo.value = updatedInfo;
+      userProfile.value = updatedInfo;
       nameController.text = updatedInfo.name;
     }
     
@@ -172,22 +191,18 @@ class MyController extends GetxController {
     final numbers = date.replaceAll(RegExp(r'[^0-9]'), '');
     if (numbers.length != 8) return date;
     
-    final year = numbers.substring(0, 4);
-    final month = numbers.substring(4, 6);
-    final day = numbers.substring(6, 8);
-    
-    return '$year.$month.$day';
+    return '${numbers.substring(0, 4)}.${numbers.substring(4, 6)}.${numbers.substring(6, 8)}';
   }
 
-  String getDistrictName(String? districtId) {
-    if (districtId == null || districtId.isEmpty) return '기타';
-    return '감사구';
-  }
+  // String getDistrictName(String? districtId) {
+  //   if (districtId == null || districtId.isEmpty) return '기타';
+  //   return '감사구';
+  // }
 
-  List<String> getDistrictNames(List<String>? districtIds) {
-    if (districtIds == null || districtIds.isEmpty) {
-      return ['감사구', '미포구', '개총구'];
-    }
-    return districtIds.map((id) => getDistrictName(id)).toList();
-  }
+  // List<String> getDistrictNames(List<String>? districtIds) {
+  //   if (districtIds == null || districtIds.isEmpty) {
+  //     return ['감사구', '미포구', '개총구'];
+  //   }
+  //   return districtIds.map((id) => getDistrictName(id)).toList();
+  // }
 } 

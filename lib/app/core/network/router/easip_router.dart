@@ -1,25 +1,26 @@
 import 'package:easip_app/app/core/network/api_request.dart';
 import 'package:easip_app/app/core/config/env_config.dart';
-import 'package:easip_app/app/modules/my/models/personal_information_model.dart';
+import 'package:easip_app/app/core/network/api_response.dart';
+import 'package:easip_app/app/modules/my/models/user_profile_response.dart';
 import 'package:easip_app/app/modules/announcement/model/announcement_response.dart';
 import 'package:easip_app/app/modules/account/token_storage.dart';
 
 
 class EasipRouter {
-  static Future<ApiRequest<PersonalInformationModel>> getMyInformation() async {
+  static Future<ApiRequest<UserProfileResponse>> getMyProfile() async {
     final token = await TokenStorage.accessToken;
     if (token == null) {
       throw Exception('Access token not found');
     }
     
-    return EasipRequest<PersonalInformationModel>(
+    return EasipRequest<UserProfileResponse>(
       path: '/v1/me/profile',
       method: HttpMethod.get,
       headers: {
         'accept': 'application/json',
         'X-AUTH-TOKEN': token,
       },
-      fromJson: PersonalInformationModel.fromJson,
+      fromJson: UserProfileResponse.fromJson,
     );
   }
 
@@ -76,6 +77,23 @@ class EasipRouter {
       },
       queryParameters: queryParams,
       fromJson: AnnouncementResponse.fromJson,
+    );
+  }
+
+   static Future<ApiRequest<ApiResponse>> deleteAccount() async {
+    final token = await TokenStorage.accessToken;
+    if (token == null) {
+      throw Exception('Access token not found');
+    }
+
+    return EasipRequest<ApiResponse>(
+      path: '/v1/me',
+      method: HttpMethod.delete,
+      headers: {
+        'accept': 'application/json',
+        'X-AUTH-TOKEN': token,
+      },
+      fromJson: ApiResponse.fromJson,
     );
   }
 }
