@@ -1,4 +1,4 @@
-import 'package:easip_app/app/core/network/router/my_router.dart';
+import 'package:easip_app/app/core/network/router/easip_router.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'models/personal_information_model.dart';
@@ -37,7 +37,7 @@ class MyController extends GetxController {
 
   Future<void> _getMyInformation() async {
     try {
-      final request = await MyRouter.getMyInformation();
+      final request = await EasipRouter.getMyInformation();
       final response = await _dataSource.execute(request);
 
       if (response == null) {
