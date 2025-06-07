@@ -7,6 +7,7 @@ class Routes {
   static const post = '/post/:postId';
   static const my = '/my';
   static const alarmRegistered = '/alarm-registered';
+  static const house = '/house/:houseId';
 }
 
 class AppRoutes {

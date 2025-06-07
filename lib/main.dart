@@ -1,3 +1,5 @@
+import 'package:easip_app/app/core/config/env_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -8,8 +10,12 @@ import 'app/services/auth_service.dart';
 import 'app/core/network/data_source.dart';
 import 'app/core/config/env_config.dart';
 
-Future<void> main() async {
+WebViewEnvironment? webViewEnvironment;
+
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+  await EnvConfig().initialize(Environment.dev);
 
   try {
     // 1. 환경 변수 로드
@@ -34,6 +40,10 @@ Future<void> main() async {
     // 초기화 실패 시에도 앱은 실행
     runApp(const App());
   }
+
+  Get.put(AuthService());
+
+  runApp(const App());
 }
 
 class App extends StatelessWidget {

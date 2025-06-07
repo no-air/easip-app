@@ -1,4 +1,5 @@
 import 'package:easip_app/app/modules/announcement/alarm_registered_list_binding.dart';
+import 'package:easip_app/app/modules/house/house_view.dart';
 import 'package:easip_app/app/modules/post/post_view.dart';
 import 'package:get/get.dart';
 import '../modules/splash/splash_binding.dart';
@@ -47,5 +48,6 @@ class AppPages {
       page: () => const AlarmRegisteredListView(),
       binding: AlarmRegisteredListBinding(),
     ),
+    GetPage(name: Routes.house, page: () => HouseView())
   ];
 } 
