@@ -72,7 +72,7 @@ class EasipRouter {
       method: HttpMethod.get,
       headers: {
         'accept': 'application/json',
-        'X-AUTH-TOKEN': 'token',
+        'X-AUTH-TOKEN': token,
       },
       queryParameters: queryParams,
       fromJson: AnnouncementResponse.fromJson,
