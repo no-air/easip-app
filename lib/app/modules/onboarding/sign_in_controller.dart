@@ -4,6 +4,7 @@ import '../../services/auth_service.dart';
 import 'package:easip_app/app/core/network/router/auth_router.dart';
 import 'package:easip_app/app/core/network/data_source.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 class SignInController extends GetxController {
   late final AuthService _authService;
@@ -163,6 +164,15 @@ class SignInController extends GetxController {
       isDismissible: true,
       snackStyle: SnackStyle.FLOATING,
     );
+  }
+
+  Future<void> performSignOut() async {
+    try {
+      await _authService.signOutWithGoogle();
+      await TokenStorage.clearAll();
+    } catch (e) {
+      debugPrint('Error during sign out: $e');
+    }
   }
 }
 

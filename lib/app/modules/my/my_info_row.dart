@@ -63,7 +63,7 @@ class MyInfoRow extends StatelessWidget {
                       ),
                     )
                   : Text(
-                      formatValue(controller.text),
+                      isEditMode ? controller.text : formatValue(controller.text),
                       style: const TextStyle(
                         fontFamily: 'plMedium',
                         fontSize: 16,

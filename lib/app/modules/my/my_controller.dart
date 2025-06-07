@@ -1,8 +1,9 @@
 import 'package:easip_app/app/core/network/router/easip_router.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'models/personal_information_model.dart';
+import 'models/user_profile_response.dart';
 import 'package:easip_app/app/core/network/data_source.dart';
+import 'package:easip_app/app/modules/my/models/user_profile_request.dart';
 
 class MyController extends GetxController {
   late final RemoteDataSource _dataSource;
@@ -10,9 +11,10 @@ class MyController extends GetxController {
   final isEditMode = false.obs;
   final hasHouse = false.obs;
   final selectedPosition = false.obs;
-  final canEdit = true.obs; 
-  final personalInfo = Rxn<PersonalInformationModel>();
-  
+  final canEdit = true.obs;
+  final userProfile = Rxn<UserProfileResponse>();
+  final isDeleted = false.obs;
+
   // TextEditingControllers
   late TextEditingController nameController;
   late TextEditingController dayOfBirthController;
@@ -25,8 +27,9 @@ class MyController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _dataSource = Get.find<RemoteDataSource>(); 
+    _dataSource = Get.find<RemoteDataSource>();
     _initializeControllers();
+    canEdit.value = true;  // 초기값을 true로 설정
   }
 
   @override
@@ -37,31 +40,68 @@ class MyController extends GetxController {
 
   Future<void> _getMyInformation() async {
     try {
-      final request = await EasipRouter.getMyInformation();
+      final request = await EasipRouter.getMyProfile();
       final response = await _dataSource.execute(request);
 
       if (response == null) {
         throw Exception('서버에서 응답을 받지 못했습니다. 잠시 후 다시 시도해주세요.');
       }
 
-      personalInfo.value = response;  
-      _updateControllersFromModel();    
+      userProfile.value = response;
+      _updateControllersFromModel();
+      canEdit.value = true;  
+    } catch (e) {
+      debugPrint(e.toString());
+      canEdit.value = false;  
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    try {
+      final request = await EasipRouter.deleteAccount();
+      final response = await _dataSource.execute(request);
+
+      if (response == null) {
+        throw Exception('서버에서 응답을 받지 못했습니다. 잠시 후 다시 시도해주세요.');
+      }
+
+      if (response.success) {
+        isDeleted.value = true;
+      }
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 
+  Future<bool> _putProfile(UserProfileRequest profileRequest) async {
+    try {
+      final request = await EasipRouter.putMyProfile(profileRequest);
+      final response = await _dataSource.execute(request);
+
+      if (response == null) {
+        throw Exception('서버에서 응답을 받지 못했습니다. 잠시 후 다시 시도해주세요.');
+      }
+
+      return response.success;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
+    }
+  }
+
   void _updateControllersFromModel() {
-    if (personalInfo.value != null) {
-      final info = personalInfo.value!;
+    if (userProfile.value != null) {
+      final info = userProfile.value!;
       nameController.text = info.name;
-      dayOfBirthController.text = info.dayOfBirth;
+      dayOfBirthController.text = info.dayOfBirth.toIso8601String()
+          .split('T')[0]
+          .replaceAll('-', '');
       mySalaryController.text = info.myMonthlySalary.toString();
       familySalaryController.text = info.familyMemberMonthlySalary.toString();
       familyCountController.text = info.allFamilyMemberCount.toString();
       carPriceController.text = info.carPrice.toString();
       assetPriceController.text = info.assetPrice.toString();
-      selectedPosition.value = info.position == 'YOUNG_MAN';
+      selectedPosition.value = info.position == UserPosition.youngMan;
     }
   }
 
@@ -73,11 +113,6 @@ class MyController extends GetxController {
     familyCountController = TextEditingController();
     carPriceController = TextEditingController();
     assetPriceController = TextEditingController();
-
-    // 날짜 변경 리스너 추가
-    dayOfBirthController.addListener(() {
-      validateDate(dayOfBirthController.text);
-    });
   }
 
   @override
@@ -93,35 +128,92 @@ class MyController extends GetxController {
   }
 
   void toggleEditMode() {
+    if (!canEdit.value) return;
     isEditMode.value = !isEditMode.value;
   }
 
-  void saveChanges() {
-    if (personalInfo.value != null) {
-      final updatedInfo = PersonalInformationModel(
-        name: nameController.text,
-        dayOfBirth: dayOfBirthController.text,
-        likingDistrictIds: personalInfo.value!.likingDistrictIds,
-        livingDistrictId: personalInfo.value!.livingDistrictId,
-        myMonthlySalary: int.tryParse(mySalaryController.text) ?? 0,
-        familyMemberMonthlySalary: int.tryParse(familySalaryController.text) ?? 0,
-        allFamilyMemberCount: int.tryParse(familyCountController.text) ?? 0,
-        position: selectedPosition.value ? 'YOUNG_MAN' : 'NEWLYWED',
-        hasCar: (carPriceController.text == '0') ? false: true,
-        carPrice: int.tryParse(carPriceController.text) ?? 0,
-        assetPrice: int.tryParse(assetPriceController.text) ?? 0,
-      );
-      
-      personalInfo.value = updatedInfo;
-      nameController.text = updatedInfo.name;
-    }
+  void saveChanges() async {
+    if (userProfile.value == null) return;
+
+    // 날짜 포맷팅 (YYYY-MM-DD)
+    final birthDateStr = dayOfBirthController.text.padLeft(8, '0');
+    final year = birthDateStr.substring(0, 4);
+    final month = birthDateStr.substring(4, 6);
+    final day = birthDateStr.substring(6, 8);
+    final formattedDate = '$year-$month-$day';  // YYYY-MM-DD 형식
     
-    isEditMode.value = false;
-    // Get.snackbar(
-    //   '알림',
-    //   '정보가 저장되었습니다.',
-    //   snackPosition: SnackPosition.BOTTOM,
-    // );
+    final updatedInfo = UserProfileResponse(
+      name: nameController.text,
+      likingPostCount: userProfile.value!.likingPostCount,
+      dayOfBirth: DateTime.parse(formattedDate),
+      likingDistrictIds: userProfile.value!.likingDistrictIds,
+      livingDistrictId: userProfile.value!.livingDistrictId,
+      myMonthlySalary: int.tryParse(mySalaryController.text) ?? 0,
+      familyMemberMonthlySalary: int.tryParse(familySalaryController.text) ?? 0,
+      allFamilyMemberCount: int.tryParse(familyCountController.text) ?? 0,
+      position: selectedPosition.value ? UserPosition.youngMan : UserPosition.newlywed,
+      hasCar: (int.tryParse(carPriceController.text) ?? 0) > 0,
+      carPrice: int.tryParse(carPriceController.text) ?? 0,
+      assetPrice: int.tryParse(assetPriceController.text) ?? 0,
+    );
+
+    // Request도 YYYY-MM-DD 형식 사용
+    final request = UserProfileRequest(
+      name: updatedInfo.name,
+      dayOfBirth: formattedDate,  // YYYY-MM-DD 형식 사용
+      livingDistrictId: "01JWNTPSH88P6W48Q8WGBK1VHT",
+      likingDistrictIds: ["01JWNTPSH88P6W48Q8WGBK1VHT"],
+      myMonthlySalary: updatedInfo.myMonthlySalary,
+      familyMemberMonthlySalary: updatedInfo.familyMemberMonthlySalary,
+      allFamilyMemberCount: updatedInfo.allFamilyMemberCount,
+      position: updatedInfo.position == UserPosition.youngMan ? 'YOUNG_MAN' : 'NEWLYWED',
+      carPrice: updatedInfo.carPrice,
+      assetPrice: updatedInfo.assetPrice,
+      hasCar: updatedInfo.hasCar,
+    );
+    
+    final validationErrors = request.getValidationErrors();
+    if (validationErrors.isNotEmpty) {
+      Get.snackbar(
+        '입력 오류',
+        validationErrors.join('\n'),
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 3),
+        backgroundColor: Colors.red[100],
+        colorText: Colors.red[900],
+      );
+      return;
+    }
+
+    try {
+      final result = await _putProfile(request);
+
+      if (result) {
+        userProfile.value = updatedInfo;
+        isEditMode.value = false;  // 성공했을 때만 수정 모드 종료
+        Get.snackbar(
+          '알림',
+          '정보가 저장되었습니다.',
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 2),
+        );
+      } else {
+        Get.snackbar(
+          '오류',
+          '정보 저장에 실패했습니다.',
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 2),
+        );
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      Get.snackbar(
+        '오류',
+        '정보 저장 중 오류가 발생했습니다.',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 2),
+      );
+    }
   }
 
   void updateDayOfBirth(String value) {
@@ -135,59 +227,16 @@ class MyController extends GetxController {
   String formatPrice(int? price) {
     if (price == null) return '0';
     return price.toString().replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
-  }
-
-  bool validateDate(String date) {
-    if (date.isEmpty) {
-      canEdit.value = false;
-      return false;
-    }
-    
-    final numbers = date.replaceAll(RegExp(r'[^0-9]'), '');
-    if (numbers.length != 8) {
-      canEdit.value = false;
-      return false;
-    }
-    
-    final year = int.tryParse(numbers.substring(0, 4));
-    final month = int.tryParse(numbers.substring(4, 6));
-    final day = int.tryParse(numbers.substring(6, 8));
-    
-    if (year == null || month == null || day == null) {
-      canEdit.value = false;
-      return false;
-    }
-    
-    final isValid = year >= 1900 && year <= 2100 && 
-                   month >= 1 && month <= 12 && 
-                   day >= 1 && day <= 31;
-    
-    canEdit.value = isValid;
-    return isValid;
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    );
   }
 
   String formatDate(String date) {
     if (date.isEmpty) return '';
     final numbers = date.replaceAll(RegExp(r'[^0-9]'), '');
     if (numbers.length != 8) return date;
-    
-    final year = numbers.substring(0, 4);
-    final month = numbers.substring(4, 6);
-    final day = numbers.substring(6, 8);
-    
-    return '$year.$month.$day';
-  }
 
-  String getDistrictName(String? districtId) {
-    if (districtId == null || districtId.isEmpty) return '기타';
-    return '감사구';
+    return '${numbers.substring(0, 4)}.${numbers.substring(4, 6)}.${numbers.substring(6, 8)}';
   }
-
-  List<String> getDistrictNames(List<String>? districtIds) {
-    if (districtIds == null || districtIds.isEmpty) {
-      return ['감사구', '미포구', '개총구'];
-    }
-    return districtIds.map((id) => getDistrictName(id)).toList();
-  }
-} 
+}
