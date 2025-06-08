@@ -5,6 +5,7 @@ import 'models/user_profile_response.dart';
 import 'package:easip_app/app/core/network/data_source.dart';
 import 'package:easip_app/app/modules/my/models/user_profile_request.dart';
 import 'models/districts_response.dart';
+import 'package:url_launcher/url_launcher.dart';  
 
 class MyController extends GetxController {
   late final RemoteDataSource _dataSource;
@@ -295,6 +296,15 @@ class MyController extends GetxController {
       userProfile.value = userProfile.value!.copyWith(
         likingDistrictIds: selected,
       );
+    }
+  }
+
+  Future<void> redirectToPrivacyTerms() async {
+    final uri = Uri.parse('http://silver-zinnia-0e0.notion.site/208550caab408014a8a2da33eeb368f6?pvs=73');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $uri';
     }
   }
 }

@@ -301,7 +301,9 @@ class MyView extends GetView<MyController> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextButton(
-                onPressed: () {},
+                onPressed: () async {
+                  await controller.redirectToPrivacyTerms();
+                },
                 style: _textButtonStyle,
                 child: const Text('개인 정보 약관 조회', style: _privacyButtonStyle),
               ),
