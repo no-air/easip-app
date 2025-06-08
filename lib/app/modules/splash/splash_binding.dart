@@ -11,18 +11,17 @@ class SplashBinding extends Bindings {
     if (!EnvConfig().isInitialized) {
       throw StateError('EnvConfig must be initialized before SplashBinding');
     }
-    
+
     // 서비스 초기화
     if (!Get.isRegistered<RemoteDataSource>()) {
       Get.put(RemoteDataSource(), permanent: true);
     }
-    
+
     if (!Get.isRegistered<AuthService>()) {
       Get.put(AuthService(), permanent: true);
     }
-    
+
     // 컨트롤러 초기화
     Get.put(SplashController());
   }
-} 
- 
+}

@@ -1,5 +1,6 @@
 import 'package:easip_app/app/core/network/router/auth_router.dart';
 import 'package:easip_app/app/modules/account/token_storage.dart';
+import 'package:easip_app/app/modules/survey/model/auth_response.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';

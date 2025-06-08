@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:easip_app/app/modules/account/token_storage.dart';
+import 'package:easip_app/app/modules/survey/model/auth_response.dart';
 import 'package:get/get.dart';
 import '../../services/auth_service.dart';
 import 'package:flutter/material.dart';
@@ -81,29 +82,33 @@ class SignInController extends GetxController {
     try {
       final refreshToken = await TokenStorage.refreshToken;
 
-      if (refreshToken == null) {
-        throw Exception('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
+      if (refreshToken == null || refreshToken.isEmpty) {
+        // No refresh token available, force re-login
+        await TokenStorage.clearAll();
+        Get.offAllNamed('/login');
+        return;
       }
 
       if (!_isValidToken(refreshToken)) {
-        throw Exception('유효하지 않은 리프레시 토큰입니다. 다시 로그인해주세요.');
+        // Invalid refresh token, force re-login
+        await TokenStorage.clearAll();
+        Get.offAllNamed('/login');
+        return;
       }
 
-      final refreshRequest = AuthRouter.refresh(refreshToken: refreshToken);
-      final refreshResponse = await _dataSource.execute(refreshRequest);
-
-      if (refreshResponse == null) {
-        throw Exception('서버에서 응답을 받지 못했습니다. 네트워크 상태를 확인해주세요.');
-      }
-
-      final authResponse = AuthResponse.fromJson(
-        refreshResponse as Map<String, dynamic>,
-      );
-
+      final response = await AuthRouter.refresh(refreshToken: refreshToken);
+      final authResponse = AuthResponse.fromJson(response.body);
       await _saveAndVerifyTokens(authResponse);
       _navigateAfterLogin();
-    } catch (e) {
-      rethrow;
+    } on DioException catch (e) {
+      final errorMessage = _handleDioError(e);
+      _showErrorSnackbar('토큰 갱신 실패', errorMessage);
+    } catch (e, stackTrace) {
+      _showErrorSnackbar('오류 발생', '토큰 갱신 중 오류가 발생했습니다. 다시 시도해주세요.');
+      if (kDebugMode) {
+        print('Error in _handleTokenRefresh: $e');
+        print('Stack trace: $stackTrace');
+      }
     }
   }
 
@@ -114,20 +119,26 @@ class SignInController extends GetxController {
         socialToken: token,
       );
 
-      final response = await _dataSource.execute(request);
+      final response = await _dataSource.execute<AuthResponse>(request);
 
       if (response == null) {
         throw Exception('서버에서 응답을 받지 못했습니다. 잠시 후 다시 시도해주세요.');
       }
 
-      final authResponse =
-          response is AuthResponse
-              ? response
-              : AuthResponse.fromJson(response as Map<String, dynamic>);
+      await _saveAndVerifyTokens(response);
 
-      await _saveAndVerifyTokens(authResponse);
-      _navigateAfterLogin();
-    } catch (e) {
+      // Navigate to survey screen after successful sign-in
+      // For temporary tokens, we'll handle the refresh flow when the token expires
+      if (response.isTemporaryToken) {
+        Get.offAllNamed('/survey');
+      } else {
+        Get.offAllNamed('/home');
+      }
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('Error in _performSignIn: $e');
+        print('Stack trace: $stackTrace');
+      }
       rethrow;
     }
   }

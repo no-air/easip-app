@@ -56,9 +56,14 @@ class _SalaryInputFieldState extends State<SalaryInputField> {
         _SalaryInputFormatter(),
       ],
       onChanged: (value) {
-        // Remove all non-digit characters before passing to parent
+        // Remove all non-digit characters and convert to integer
         final digits = value.replaceAll(RegExp(r'[^0-9]'), '');
-        widget.onChanged(digits);
+        if (digits.isNotEmpty) {
+          final amount = int.tryParse(digits) ?? 0;
+          widget.onChanged(amount.toString());
+        } else {
+          widget.onChanged('0');
+        }
       },
     );
   }
@@ -104,11 +109,10 @@ class _SalaryInputFormatter extends TextInputFormatter {
 
   String _formatNumber(String digits) {
     if (digits.isEmpty) return '';
-
     final number = int.tryParse(digits) ?? 0;
     return number.toString().replaceAllMapped(
-      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
-      (Match m) => '${m[1]},',
-    );
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (Match m) => '${m[1]},',
+        );
   }
 }

@@ -9,15 +9,18 @@ class ProgressDots extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(total, (index) => Container(
-        margin: const EdgeInsets.symmetric(horizontal: 3),
-        width: 8,
-        height: 8,
-        decoration: BoxDecoration(
-          color: index == current ? Colors.black : Colors.grey[300],
-          shape: BoxShape.circle,
+      children: List.generate(
+        total,
+        (index) => Container(
+          margin: const EdgeInsets.symmetric(horizontal: 3),
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: index == current ? Colors.black : Colors.grey[300],
+            shape: BoxShape.circle,
+          ),
         ),
-      )),
+      ),
     );
   }
 }
@@ -31,14 +34,14 @@ class SurveyTextField extends StatelessWidget {
   final TextAlign? textAlign;
   final void Function(String)? onChanged;
   const SurveyTextField({
-    super.key, 
-    required this.hint, 
-    required this.controller, 
-    this.keyboardType = TextInputType.text, 
-    this.suffixText, 
+    super.key,
+    required this.hint,
+    required this.controller,
+    this.keyboardType = TextInputType.text,
+    this.suffixText,
     this.enabled = true,
     this.textAlign,
-    this.onChanged
+    this.onChanged,
   });
 
   @override
@@ -53,7 +56,10 @@ class SurveyTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hint,
         suffixText: suffixText,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 18,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey[400]!),
@@ -71,7 +77,12 @@ class SurveyButton extends StatelessWidget {
   final String text;
   final VoidCallback? onTap;
   final bool enabled;
-  const SurveyButton({super.key, required this.text, this.onTap, this.enabled = true});
+  const SurveyButton({
+    super.key,
+    required this.text,
+    this.onTap,
+    this.enabled = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -89,8 +100,8 @@ class SurveyButton extends StatelessWidget {
           child: Text(
             text,
             style: const TextStyle(
-              color: Colors.white, 
-              fontSize: 18, 
+              color: Colors.white,
+              fontSize: 18,
               fontFamily: 'PaperlogyMedium',
             ),
           ),
@@ -104,7 +115,12 @@ class SurveyCheckboxGroup extends StatelessWidget {
   final List<String> options;
   final List<bool> values;
   final void Function(int, bool) onChanged;
-  const SurveyCheckboxGroup({super.key, required this.options, required this.values, required this.onChanged});
+  const SurveyCheckboxGroup({
+    super.key,
+    required this.options,
+    required this.values,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -112,18 +128,23 @@ class SurveyCheckboxGroup extends StatelessWidget {
       alignment: WrapAlignment.center,
       runSpacing: 6,
       spacing: 32,
-      children: List.generate(options.length, (i) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Checkbox(
-            value: values[i],
-            onChanged: (val) => onChanged(i, val ?? false),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            side: const BorderSide(width: 2),
-          ),
-          Text(options[i]),
-        ],
-      )),
+      children: List.generate(
+        options.length,
+        (i) => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Checkbox(
+              value: values[i],
+              onChanged: (val) => onChanged(i, val ?? false),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              side: const BorderSide(width: 2),
+            ),
+            Text(options[i]),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -132,7 +153,12 @@ class SurveyRadioGroup extends StatelessWidget {
   final List<String> options;
   final int? selectedIndex;
   final void Function(int?) onChanged;
-  const SurveyRadioGroup({super.key, required this.options, required this.selectedIndex, required this.onChanged});
+  const SurveyRadioGroup({
+    super.key,
+    required this.options,
+    required this.selectedIndex,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -140,18 +166,20 @@ class SurveyRadioGroup extends StatelessWidget {
       alignment: WrapAlignment.center,
       runSpacing: 6,
       spacing: 32,
-      children: List.generate(options.length, (i) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Radio<int>(
-            value: i,
-            groupValue: selectedIndex,
-            onChanged: onChanged,
-          ),
-          Text(options[i]),
-        ],
-      )),
+      children: List.generate(
+        options.length,
+        (i) => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Radio<int>(
+              value: i,
+              groupValue: selectedIndex,
+              onChanged: onChanged,
+            ),
+            Text(options[i]),
+          ],
+        ),
+      ),
     );
   }
 }
- 

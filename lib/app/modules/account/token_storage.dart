@@ -1,4 +1,5 @@
 import 'package:easip_app/app/core/network/router/auth_router.dart';
+import 'package:easip_app/app/modules/survey/model/auth_response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class TokenStorage {
@@ -38,5 +39,17 @@ class TokenStorage {
   // 로그아웃 시 토큰 지우기
   static Future<void> clearAll() async {
     await _storage.deleteAll();
+  }
+
+  // AuthResponse 가져오기
+  static Future<AuthResponse?> getAuthResponse() async {
+    final accessToken = TokenStorage.accessToken;
+    if (accessToken == null) return null;
+
+    return AuthResponse(
+      accessToken: accessToken.toString(),
+      refreshToken: await refreshToken,
+      isTemporaryToken: await isTemporaryToken,
+    );
   }
 }

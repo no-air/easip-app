@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:easip_app/app/modules/account/token_storage.dart';
 import 'package:get/get.dart';
 import 'package:flutter/foundation.dart';
 import 'api_request.dart';
@@ -20,34 +21,50 @@ class RemoteDataSource extends GetxService {
       ),
     );
 
-    _dio.interceptors.add(LogInterceptor(
-      request: true,
-      requestHeader: true,
-      requestBody: true,
-      responseHeader: true,
-      responseBody: true,
-      error: true,
-    ));
+    _dio.interceptors.add(
+      LogInterceptor(
+        request: true,
+        requestHeader: true,
+        requestBody: true,
+        responseHeader: true,
+        responseBody: true,
+        error: true,
+      ),
+    );
   }
 
   Future<T?> execute<T>(ApiRequest<T> request) async {
     try {
-      debugPrint('RemoteDataSource: Executing ${request.method} request to ${request.url}');
-      
-      final response = await _dio.request(
+      // Get headers asynchronously if they are a Future
+      final dynamic headers =
+          request.headers is Future ? await request.headers : request.headers;
+
+      final response = await _dio.request<dynamic>(
         request.url,
         data: request.body,
         queryParameters: request.queryParameters,
         options: Options(
           method: request.method,
-          headers: request.headers,
-          validateStatus: (status) => status != null && [200, 201, 204].contains(status),
+          headers: headers,
+          responseType: ResponseType.json,
+          validateStatus: (status) => status != null && status < 500,
         ),
       );
-      
+
       if (response.statusCode != 200 && response.statusCode != 201) {
+        final dynamic responseData = response.data;
+        final String errorMessage;
+
+        if (responseData is Map<String, dynamic>) {
+          errorMessage = responseData['message']?.toString() ?? 'Unknown error';
+        } else if (responseData is String) {
+          errorMessage = responseData;
+        } else {
+          errorMessage = 'Server error ${response.statusCode}';
+        }
+
         throw HttpException(
-          '서버 에러: ${response.statusCode}',
+          errorMessage,
           statusCode: response.statusCode,
           data: response.data,
         );
@@ -55,10 +72,19 @@ class RemoteDataSource extends GetxService {
 
       return request.parseResponse(response.data);
     } on DioException catch (e) {
-      debugPrint('RemoteDataSource: Network error - ${e.message}');
+      if (kDebugMode) {
+        print('[ERROR] Network error: ${e.message}');
+        if (e.response != null) {
+          print('[ERROR] Response data: ${e.response?.data}');
+          print('[ERROR] Response headers: ${e.response?.headers}');
+        }
+      }
       throw _handleError(e);
-    } catch (e) {
-      debugPrint('RemoteDataSource: Error - $e');
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('[ERROR] Unexpected error: $e');
+        print('Stack trace: $stackTrace');
+      }
       rethrow;
     }
   }

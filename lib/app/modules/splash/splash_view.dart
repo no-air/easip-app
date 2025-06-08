@@ -5,7 +5,7 @@ import '../../core/widgets/image_asset.dart';
 import 'splash_controller.dart';
 
 class SplashView extends GetView<SplashController> {
- const SplashView({super.key});
+  const SplashView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +28,7 @@ class SplashView extends GetView<SplashController> {
                 const Text(
                   '어려운 주택 청약을\n쉽게 관리하자',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'plSemiBold',
-                    fontSize: 29,
-                  ),
+                  style: TextStyle(fontFamily: 'plSemiBold', fontSize: 29),
                 ),
               ],
             ),
@@ -40,4 +37,4 @@ class SplashView extends GetView<SplashController> {
       ),
     );
   }
-} 
+}
