@@ -59,7 +59,7 @@ class SurveyView extends GetView<SurveyController> {
       case 0:
         return controller.birthDate.value != null;
       case 1:
-        return controller.interestAreaIds.isNotEmpty;
+        return controller.interestAreaIds.isNotEmpty && controller.interestAreaIds.length <= 3;
       case 2:
         return controller.livingDistrictIds.isNotEmpty;
       case 4:

@@ -27,9 +27,18 @@ class _InterestAreasPageState extends State<InterestAreasPage> {
       currentStep: 1,
       totalSteps: 11,
       title: '관심있는 청약 지역은 어디인가요?',
+      isNextEnabled: controller.interestAreaIds.isNotEmpty && controller.interestAreaIds.length <= 3,
+      onNextPressed: controller.nextPage,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 51, right: 51, bottom: 10),
+            child: Text(
+              '최대 3개까지 선택할 수 있습니다.',
+              style: TextStyle(color: Colors.grey, fontSize: 14),
+            ),
+          ),
           const SizedBox(height: 24),
           Expanded(
             child: SingleChildScrollView(
@@ -150,8 +159,6 @@ class _InterestAreasPageState extends State<InterestAreasPage> {
           ),
         ],
       ),
-      isNextEnabled: controller.interestAreaIds.isNotEmpty,
-      onNextPressed: controller.nextPage,
     );
   }
 }

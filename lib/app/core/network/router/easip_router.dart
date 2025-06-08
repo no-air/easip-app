@@ -101,7 +101,7 @@ class EasipRouter {
     );
   }
 
-   static Future<ApiRequest<ApiResponse>> deleteAccount() async {
+  static Future<ApiRequest<ApiResponse>> deleteAccount() async {
     final token = await TokenStorage.accessToken;
     if (token == null) {
       throw Exception('Access token not found');

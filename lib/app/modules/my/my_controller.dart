@@ -199,10 +199,7 @@ class MyController extends GetxController {
       myMonthlySalary: updatedInfo.myMonthlySalary,
       familyMemberMonthlySalary: updatedInfo.familyMemberMonthlySalary,
       allFamilyMemberCount: updatedInfo.allFamilyMemberCount,
-      position:
-          updatedInfo.position == UserPosition.youngMan
-              ? 'YOUNG_MAN'
-              : 'NEWLYWED',
+      position: updatedInfo.position.code,
       carPrice: updatedInfo.carPrice,
       assetPrice: updatedInfo.assetPrice,
       hasCar: updatedInfo.hasCar,

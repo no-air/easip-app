@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:easip_app/app/modules/account/token_storage.dart';
 import 'package:get/get.dart';
 import 'package:flutter/foundation.dart';
 import 'api_request.dart';
