@@ -15,6 +15,9 @@ class Routes {
   static const surveyCarAsset = '$survey/car-asset';
   static const surveyCompletion = '$survey/completion';
   static const post = '/post/:postId';
+  static const my = '/my';
+  static const alarmRegistered = '/alarm-registered';
+  static const house = '/house/:houseId';
 }
 
 class AppRoutes {

@@ -1,10 +1,3 @@
-// lib/app/core/network/router/auth_router.dart
-import 'dart:math' as math;
-import 'package:easip_app/app/core/network/auth_request.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:easip_app/app/modules/account/token_storage.dart';
-import 'package:easip_app/app/modules/survey/model/signup_request.dart';
 import 'package:easip_app/app/core/network/api_request.dart';
 import 'package:easip_app/app/core/config/env_config.dart';
 import 'package:easip_app/app/modules/survey/model/auth_response.dart';

@@ -1,3 +1,5 @@
+import 'package:easip_app/app/modules/announcement/alarm_registered_list_binding.dart';
+import 'package:easip_app/app/modules/house/house_view.dart';
 import 'package:easip_app/app/modules/post/post_view.dart';
 import 'package:easip_app/app/modules/survey/pages/pages.dart';
 import 'package:get/get.dart';
@@ -16,6 +18,7 @@ import '../modules/survey/pages/income_page.dart';
 import '../modules/survey/pages/household_page.dart';
 import '../modules/survey/pages/assets_page.dart';
 import '../modules/survey/pages/interest_areas_page.dart';
+import '../modules/announcement/alarm_registered_list_view.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -67,5 +70,11 @@ class AppPages {
       ],
     ),
     GetPage(name: Routes.post, page: () => PostView()),
+    GetPage(
+      name: Routes.alarmRegistered,
+      page: () => const AlarmRegisteredListView(),
+      binding: AlarmRegisteredListBinding(),
+    ),
+    GetPage(name: Routes.house, page: () => HouseView())
   ];
 }
