@@ -4,6 +4,8 @@ class Routes {
   static const onboarding = '/onboarding';
   static const signin = '/sign-in';
   static const survey = '/survey';
+  static const map = '/house-map';
+
   static const surveyLivingArea = '$survey/living-area';
   static const surveyIncome = '$survey/income';
   static const surveyHousehold = '$survey/household';

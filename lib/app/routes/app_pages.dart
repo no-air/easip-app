@@ -1,5 +1,9 @@
+import 'dart:collection';
+
 import 'package:easip_app/app/modules/announcement/alarm_registered_list_binding.dart';
 import 'package:easip_app/app/modules/house/house_view.dart';
+import 'package:easip_app/app/modules/map/map_binding.dart';
+import 'package:easip_app/app/modules/map/map_view.dart';
 import 'package:easip_app/app/modules/post/post_view.dart';
 import 'package:easip_app/app/modules/survey/pages/pages.dart';
 import 'package:get/get.dart';
@@ -23,6 +27,7 @@ import 'app_routes.dart';
 
 class AppPages {
   static final pages = [
+    GetPage(name: Routes.map, page: () => MapView(), binding: MapBinding()),
     GetPage(
       name: Routes.splash,
       page: () => const SplashView(),
@@ -75,6 +80,6 @@ class AppPages {
       page: () => const AlarmRegisteredListView(),
       binding: AlarmRegisteredListBinding(),
     ),
-    GetPage(name: Routes.house, page: () => HouseView())
+    GetPage(name: Routes.house, page: () => HouseView()),
   ];
 }
