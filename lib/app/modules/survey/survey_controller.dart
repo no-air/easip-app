@@ -112,7 +112,7 @@ class SurveyController extends GetxController {
                 : (interestAreaIds.isNotEmpty ? interestAreaIds.first : ''),
         myMonthlySalary: income.value,
         familyMemberMonthlySalary: totalFamilySalary,
-        allFamilyMemberCount: householdSize.value,
+        allFamilyMemberCount: householdSize.value + 1,
         position: getPosition(),
         hasCar: hasCar.value,
         carPrice: hasCar.value ? carAsset.value : 0,
