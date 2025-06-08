@@ -3,6 +3,7 @@ import 'package:easip_app/app/modules/account/token_storage.dart';
 import 'package:easip_app/app/modules/survey/model/signup_request.dart';
 import 'package:easip_app/app/modules/survey/model/auth_response.dart';
 import 'package:easip_app/app/routes/app_routes.dart';
+import 'package:easip_app/app/services/auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:easip_app/app/core/network/data_source.dart';
@@ -140,7 +141,8 @@ class SurveyController extends GetxController {
     livingDistrictIds.add(id);
   }
 
-  _getUserName() {
-    return "나나미";
+  String _getUserName() {
+    final authService = Get.find<AuthService>();
+    return authService.currentUser.value?.displayName ?? "";
   }
 }
