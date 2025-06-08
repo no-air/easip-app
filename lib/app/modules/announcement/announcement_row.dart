@@ -14,20 +14,24 @@ class AnnouncementRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Colors.white,
       child: InkWell(
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        hoverColor: Colors.transparent,
         onTap: () {
           Get.toNamed('/post/${announcement.postId}');
         },
         child: Container(
-          padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
+          padding: const EdgeInsets.only(left: 16, right: 16,),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Stack(
                 children: [
                   SizedBox(
-                    width: ScreenUtils.ratioWidth(context, 75),
-                    height: ScreenUtils.ratioWidth(context, 75),
+                    width: ScreenUtils.ratioWidth(context, 80),
+                    height: ScreenUtils.ratioWidth(context, 80),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(4),
                       child:
@@ -84,7 +88,7 @@ class AnnouncementRow extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: SizedBox(
-                  height: ScreenUtils.ratioWidth(context, 75),
+                  height: ScreenUtils.ratioWidth(context, 80),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -92,7 +96,7 @@ class AnnouncementRow extends StatelessWidget {
                       Text(
                         announcement.title,
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 15,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -102,11 +106,11 @@ class AnnouncementRow extends StatelessWidget {
                         children: [
                           Text(
                             announcement.periodText,
-                            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                            style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                           ),
                           Text(
                             announcement.recruitingText,
-                            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                            style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                           ),
                         ],
                       ),
