@@ -1,6 +1,8 @@
-import 'package:easip_app/app/core/network/api_request.dart';
 import 'package:easip_app/app/core/config/env_config.dart';
+import 'package:easip_app/app/core/network/api_request.dart';
+import 'package:easip_app/app/core/network/auth_request.dart';
 import 'package:easip_app/app/modules/survey/model/auth_response.dart';
+import 'package:easip_app/app/modules/survey/model/signup_request.dart';
 
 class AuthRouter {
   static ApiRequest<AuthResponse> signIn({

@@ -49,6 +49,15 @@ class SignInController extends GetxController {
     }
   }
 
+  Future<void> performSignOut() async {
+    try {
+      await _authService.signOutWithGoogle();
+      await TokenStorage.clearAll();
+    } catch (e) {
+      debugPrint('Error during sign out: $e');
+    }
+  }
+
   Future<void> signInEasip() async {
     try {
       // 1. Get Google ID token
