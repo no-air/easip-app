@@ -5,7 +5,7 @@ import 'package:easip_app/app/modules/my/models/user_profile_response.dart';
 import 'package:easip_app/app/modules/announcement/model/announcement_response.dart';
 import 'package:easip_app/app/modules/account/token_storage.dart';
 import 'package:easip_app/app/modules/my/models/user_profile_request.dart';
-
+import 'package:easip_app/app/modules/my/models/districts_response.dart';
 
 class EasipRouter {
   static Future<ApiRequest<UserProfileResponse>> getMyProfile() async {
@@ -117,6 +117,23 @@ class EasipRouter {
       fromJson: ApiResponse.fromJson,
     );
   }
+
+  static Future<ApiRequest<DistrictResponse>> getDistrictList() async {
+    final token = await TokenStorage.accessToken;
+    if (token == null) {
+      throw Exception('Access token not found');
+    }
+
+    return EasipRequest<DistrictResponse>(
+      path: '/v1/districts',
+      method: HttpMethod.get,
+      headers: {
+        'accept': 'application/json',
+        'X-AUTH-TOKEN': token,
+      },
+      fromJson: DistrictResponse.fromJson,
+    );
+  }
 }
 
 class EasipRequest<T> extends ApiRequest<T> {
@@ -161,7 +178,8 @@ class EasipRequest<T> extends ApiRequest<T> {
   @override
   T parseResponse(dynamic data) {
     if (data == null) throw Exception('Response data is null');
-    if (data is! Map<String, dynamic>) throw Exception('Invalid response format');
+    if (data is! Map<String, dynamic>)
+      throw Exception('Invalid response format');
     return fromJson(data);
   }
 }

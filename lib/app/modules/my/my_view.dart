@@ -6,6 +6,8 @@ import 'my_controller.dart';
 import 'my_info_row.dart';
 import '../../components//app/custom_alert.dart';
 import '../..//routes/app_routes.dart';
+import 'edit_living_area_view.dart';
+import 'edit_liking_area_view.dart';
 
 class MyView extends GetView<MyController> {
   const MyView({super.key});
@@ -41,12 +43,18 @@ class MyView extends GetView<MyController> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed:
-                        controller.canEdit.value
-                            ? (controller.isEditMode.value
-                                ? controller.saveChanges
-                                : controller.toggleEditMode)
-                            : null,
+                    onPressed: () {
+                      if (controller.districts.value == null) {
+                        controller.getDistrictList();
+                      }
+                      if (controller.canEdit.value) {
+                        if (controller.isEditMode.value) {
+                          controller.saveChanges();
+                        } else {
+                          controller.toggleEditMode();
+                        }
+                      }
+                    },
                     style: _textButtonStyle,
                     child: Text(
                       controller.isEditMode.value ? '저장' : '수정하기',
@@ -67,7 +75,6 @@ class MyView extends GetView<MyController> {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
               GetX<MyController>(
                 builder:
                     (controller) => Column(
@@ -195,15 +202,43 @@ class MyView extends GetView<MyController> {
                     formatValue: (value) => controller.formatDate(value),
                   ),
                   MyChipRow(
-                    label: '선호지역',
+                    label: '거주지역',
                     values: [
                       controller.userProfile.value?.livingDistrictId ?? '',
                     ],
+                    onTap:
+                        controller.isEditMode.value
+                            ? () {
+                              showModalBottomSheet(
+                                context: Get.context!,
+                                isScrollControlled: true,
+                                builder:
+                                    (context) => FractionallySizedBox(
+                                      heightFactor: 0.9,
+                                      child: const EditLivingAreaView(),
+                                    ),
+                              );
+                            }
+                            : null,
                   ),
                   MyChipRow(
-                    label: '거주지역',
+                    label: '선호지역',
                     values:
                         controller.userProfile.value?.likingDistrictIds ?? [],
+                    onTap:
+                        controller.isEditMode.value
+                            ? () {
+                              showModalBottomSheet(
+                                context: Get.context!,
+                                isScrollControlled: true,
+                                builder:
+                                    (context) => FractionallySizedBox(
+                                      heightFactor: 0.9,
+                                      child: const EditLikingAreaView(),
+                                    ),
+                              );
+                            }
+                            : null,
                   ),
                   MyToggleRow(
                     label: '전형',
@@ -270,7 +305,7 @@ class MyView extends GetView<MyController> {
                 style: _textButtonStyle,
                 child: const Text('개인 정보 약관 조회', style: _privacyButtonStyle),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -295,7 +330,8 @@ class MyView extends GetView<MyController> {
                           try {
                             await controller.deleteAccount();
                             if (controller.isDeleted.value) {
-                              await Get.find<SignInController>().performSignOut();
+                              await Get.find<SignInController>()
+                                  .performSignOut();
                               Get.offAllNamed(Routes.onboarding);
                             }
                           } catch (e) {

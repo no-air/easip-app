@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'models/user_profile_response.dart';
 import 'package:easip_app/app/core/network/data_source.dart';
 import 'package:easip_app/app/modules/my/models/user_profile_request.dart';
+import 'models/districts_response.dart';
 
 class MyController extends GetxController {
   late final RemoteDataSource _dataSource;
@@ -14,6 +15,10 @@ class MyController extends GetxController {
   final canEdit = true.obs;
   final userProfile = Rxn<UserProfileResponse>();
   final isDeleted = false.obs;
+
+  final districts = Rxn<DistrictResponse>();
+  final livingArea = RxnInt();
+  final likingAreas = <bool>[].obs;
 
   // TextEditingControllers
   late TextEditingController nameController;
@@ -29,7 +34,7 @@ class MyController extends GetxController {
     super.onInit();
     _dataSource = Get.find<RemoteDataSource>();
     _initializeControllers();
-    canEdit.value = true;  // 초기값을 true로 설정
+    canEdit.value = true;
   }
 
   @override
@@ -49,10 +54,10 @@ class MyController extends GetxController {
 
       userProfile.value = response;
       _updateControllersFromModel();
-      canEdit.value = true;  
+      canEdit.value = true;
     } catch (e) {
       debugPrint(e.toString());
-      canEdit.value = false;  
+      canEdit.value = false;
     }
   }
 
@@ -89,11 +94,28 @@ class MyController extends GetxController {
     }
   }
 
+  Future<void> getDistrictList() async {
+    try {
+      final request = await EasipRouter.getDistrictList();
+      final response = await _dataSource.execute(request);
+
+      if (response == null) {
+        throw Exception('서버에서 응답을 받지 못했습니다. 잠시 후 다시 시도해주세요.');
+      }
+
+      districts.value = response;
+    } catch (e) {
+      debugPrint(e.toString());
+      canEdit.value = false;
+    }
+  }
+
   void _updateControllersFromModel() {
     if (userProfile.value != null) {
       final info = userProfile.value!;
       nameController.text = info.name;
-      dayOfBirthController.text = info.dayOfBirth.toIso8601String()
+      dayOfBirthController.text = info.dayOfBirth
+          .toIso8601String()
           .split('T')[0]
           .replaceAll('-', '');
       mySalaryController.text = info.myMonthlySalary.toString();
@@ -140,38 +162,51 @@ class MyController extends GetxController {
     final year = birthDateStr.substring(0, 4);
     final month = birthDateStr.substring(4, 6);
     final day = birthDateStr.substring(6, 8);
-    final formattedDate = '$year-$month-$day';  // YYYY-MM-DD 형식
-    
+    final formattedDate = '$year-$month-$day'; // YYYY-MM-DD 형식
+
     final updatedInfo = UserProfileResponse(
       name: nameController.text,
       likingPostCount: userProfile.value!.likingPostCount,
       dayOfBirth: DateTime.parse(formattedDate),
-      likingDistrictIds: userProfile.value!.likingDistrictIds,
-      livingDistrictId: userProfile.value!.livingDistrictId,
+      likingDistrictIds: userProfile.value?.likingDistrictIds ?? [],
+      livingDistrictId: userProfile.value?.livingDistrictId ?? "",
       myMonthlySalary: int.tryParse(mySalaryController.text) ?? 0,
       familyMemberMonthlySalary: int.tryParse(familySalaryController.text) ?? 0,
       allFamilyMemberCount: int.tryParse(familyCountController.text) ?? 0,
-      position: selectedPosition.value ? UserPosition.youngMan : UserPosition.newlywed,
+      position:
+          selectedPosition.value
+              ? UserPosition.youngMan
+              : UserPosition.newlywed,
       hasCar: (int.tryParse(carPriceController.text) ?? 0) > 0,
       carPrice: int.tryParse(carPriceController.text) ?? 0,
       assetPrice: int.tryParse(assetPriceController.text) ?? 0,
     );
 
+    final livingDistrictName = userProfile.value?.livingDistrictId ?? "";
+    final livingDistrictId =
+        districts.value?.findByName(livingDistrictName)?.id ?? '';
+    final likingDistrictNames = userProfile.value?.likingDistrictIds ?? [];
+    final likingDistrictIds =
+        districts.value?.getDistrictNames(likingDistrictNames) ?? [];
+
     // Request도 YYYY-MM-DD 형식 사용
     final request = UserProfileRequest(
       name: updatedInfo.name,
-      dayOfBirth: formattedDate,  // YYYY-MM-DD 형식 사용
-      livingDistrictId: "01JWNTPSH88P6W48Q8WGBK1VHT",
-      likingDistrictIds: ["01JWNTPSH88P6W48Q8WGBK1VHT"],
+      dayOfBirth: formattedDate,
+      livingDistrictId: livingDistrictId,
+      likingDistrictIds: likingDistrictIds,
       myMonthlySalary: updatedInfo.myMonthlySalary,
       familyMemberMonthlySalary: updatedInfo.familyMemberMonthlySalary,
       allFamilyMemberCount: updatedInfo.allFamilyMemberCount,
-      position: updatedInfo.position == UserPosition.youngMan ? 'YOUNG_MAN' : 'NEWLYWED',
+      position:
+          updatedInfo.position == UserPosition.youngMan
+              ? 'YOUNG_MAN'
+              : 'NEWLYWED',
       carPrice: updatedInfo.carPrice,
       assetPrice: updatedInfo.assetPrice,
       hasCar: updatedInfo.hasCar,
     );
-    
+
     final validationErrors = request.getValidationErrors();
     if (validationErrors.isNotEmpty) {
       Get.snackbar(
@@ -190,7 +225,7 @@ class MyController extends GetxController {
 
       if (result) {
         userProfile.value = updatedInfo;
-        isEditMode.value = false;  // 성공했을 때만 수정 모드 종료
+        isEditMode.value = false; // 성공했을 때만 수정 모드 종료
         Get.snackbar(
           '알림',
           '정보가 저장되었습니다.',
@@ -238,5 +273,28 @@ class MyController extends GetxController {
     if (numbers.length != 8) return date;
 
     return '${numbers.substring(0, 4)}.${numbers.substring(4, 6)}.${numbers.substring(6, 8)}';
+  }
+
+  void initLikingAreas() {
+    final districtsName = districts.value?.names ?? [];
+    final selected = userProfile.value?.likingDistrictIds ?? [];
+
+    likingAreas.value = List.generate(
+      districtsName.length,
+      (i) => selected.contains(districtsName[i]),
+    );
+  }
+
+  void updateLikingDistrict() {
+    final districtsName = districts.value?.names ?? [];
+    final selected = <String>[];
+    for (int i = 0; i < likingAreas.length; i++) {
+      if (likingAreas[i]) selected.add(districtsName[i]);
+    }
+    if (userProfile.value != null) {
+      userProfile.value = userProfile.value!.copyWith(
+        likingDistrictIds: selected,
+      );
+    }
   }
 }
