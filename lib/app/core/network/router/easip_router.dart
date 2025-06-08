@@ -1,25 +1,47 @@
 import 'package:easip_app/app/core/network/api_request.dart';
 import 'package:easip_app/app/core/config/env_config.dart';
-import 'package:easip_app/app/modules/my/models/personal_information_model.dart';
+import 'package:easip_app/app/core/network/api_response.dart';
+import 'package:easip_app/app/modules/my/models/user_profile_response.dart';
 import 'package:easip_app/app/modules/announcement/model/announcement_response.dart';
 import 'package:easip_app/app/modules/account/token_storage.dart';
-
+import 'package:easip_app/app/modules/my/models/user_profile_request.dart';
+import 'package:easip_app/app/modules/my/models/districts_response.dart';
 
 class EasipRouter {
-  static Future<ApiRequest<PersonalInformationModel>> getMyInformation() async {
+  static Future<ApiRequest<UserProfileResponse>> getMyProfile() async {
     final token = await TokenStorage.accessToken;
     if (token == null) {
       throw Exception('Access token not found');
     }
     
-    return EasipRequest<PersonalInformationModel>(
+    return EasipRequest<UserProfileResponse>(
       path: '/v1/me/profile',
       method: HttpMethod.get,
       headers: {
         'accept': 'application/json',
         'X-AUTH-TOKEN': token,
       },
-      fromJson: PersonalInformationModel.fromJson,
+      fromJson: UserProfileResponse.fromJson,
+    );
+  }
+
+   static Future<ApiRequest<ApiResponse>> putMyProfile(
+      UserProfileRequest request,
+   ) async {
+    final token = await TokenStorage.accessToken;
+    if (token == null) {
+      throw Exception('Access token not found');
+    }
+    
+    return EasipRequest<ApiResponse>(
+      path: '/v1/me/profile',
+      method: HttpMethod.put,
+      headers: {
+        'accept': 'application/json',
+        'X-AUTH-TOKEN': token,
+      },
+      body: request.toJson(),
+      fromJson: ApiResponse.fromJson,
     );
   }
 
@@ -78,6 +100,40 @@ class EasipRouter {
       fromJson: AnnouncementResponse.fromJson,
     );
   }
+
+   static Future<ApiRequest<ApiResponse>> deleteAccount() async {
+    final token = await TokenStorage.accessToken;
+    if (token == null) {
+      throw Exception('Access token not found');
+    }
+
+    return EasipRequest<ApiResponse>(
+      path: '/v1/me',
+      method: HttpMethod.delete,
+      headers: {
+        'accept': 'application/json',
+        'X-AUTH-TOKEN': token,
+      },
+      fromJson: ApiResponse.fromJson,
+    );
+  }
+
+  static Future<ApiRequest<DistrictResponse>> getDistrictList() async {
+    final token = await TokenStorage.accessToken;
+    if (token == null) {
+      throw Exception('Access token not found');
+    }
+
+    return EasipRequest<DistrictResponse>(
+      path: '/v1/districts',
+      method: HttpMethod.get,
+      headers: {
+        'accept': 'application/json',
+        'X-AUTH-TOKEN': token,
+      },
+      fromJson: DistrictResponse.fromJson,
+    );
+  }
 }
 
 class EasipRequest<T> extends ApiRequest<T> {
@@ -122,7 +178,8 @@ class EasipRequest<T> extends ApiRequest<T> {
   @override
   T parseResponse(dynamic data) {
     if (data == null) throw Exception('Response data is null');
-    if (data is! Map<String, dynamic>) throw Exception('Invalid response format');
+    if (data is! Map<String, dynamic>)
+      throw Exception('Invalid response format');
     return fromJson(data);
   }
 }
