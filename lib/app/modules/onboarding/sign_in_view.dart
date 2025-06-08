@@ -38,6 +38,23 @@ class SignInView extends GetView<SignInController> {
             ),
           ),
           Positioned(
+            bottom: MediaQuery.of(context).padding.bottom + ScreenUtils.ratioHeight(context, 120),
+            left: ScreenUtils.ratioHeight(context, 30),
+            right: ScreenUtils.ratioHeight(context, 30),
+            child: ElevatedButton(
+              onPressed: () => Get.offAllNamed('/survey'), // Navigate to survey page without login
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Continue without login'),
+            ),
+          ),
+          Positioned(
             bottom: MediaQuery.of(context).padding.bottom + ScreenUtils.ratioHeight(context, 30),
             left: ScreenUtils.ratioHeight(context, 30),
             right: ScreenUtils.ratioHeight(context, 30),

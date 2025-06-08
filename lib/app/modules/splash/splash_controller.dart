@@ -13,11 +13,11 @@ class SplashController extends GetxController {
   Future<void> _navigateToHome() async {
     try {
       await AuthService().refresh();
-      Get.offNamed(Routes.home);
+      await Future.delayed(const Duration(seconds: 2));
+      Get.offAllNamed(Routes.home);
     } catch (e) {
-      await Future.delayed(const Duration(seconds: 2), () {
-        Get.offAllNamed(Routes.onboarding);
-      });
+      await Future.delayed(const Duration(seconds: 2));
+      Get.offAllNamed(Routes.onboarding);
     }
   }
 }

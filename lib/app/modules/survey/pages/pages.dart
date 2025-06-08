@@ -1,0 +1,13 @@
+export 'assets_page.dart';
+export 'base_survey_page.dart';
+export 'birth_date_page.dart';
+export 'car_asset_page.dart';
+export 'car_ownership_page.dart';
+export 'completion_page.dart';
+export 'family_salaries_page.dart';
+export 'household_page.dart';
+export 'income_page.dart';
+export 'interest_areas_page.dart';
+export 'living_area_page.dart';
+export 'marriage_status_page.dart';
+export 'total_asset_page.dart';

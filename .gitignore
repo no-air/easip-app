@@ -95,3 +95,4 @@ coverage/
 .env.local
 .env.development
 .env.production
+android/app/google-services.json

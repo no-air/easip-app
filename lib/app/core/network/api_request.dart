@@ -2,7 +2,7 @@ abstract class ApiRequest<T> {
   String get baseUrl;
   String get path;
   String get method;
-  Map<String, String>? get headers;
+  dynamic get headers;
   Map<String, dynamic>? get queryParameters;
   dynamic get body;
 
@@ -10,7 +10,7 @@ abstract class ApiRequest<T> {
 
   T? parseResponse(dynamic data) {
     if (data == null) return null;
-    
+
     final type = T;
     if (type == List) {
       if (data is! List) {
