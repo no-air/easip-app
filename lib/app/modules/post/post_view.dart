@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 class PostView extends GetView {
   PostView({super.key});
-  final String baseUrl = dotenv.env['WEBVIEW_URL'] ?? '';
+  final baseUrl = dotenv.env['DEV_WEBVIEW_URL'] ?? '';
   final String postId = Get.parameters['postId'] ?? '';
 
   @override
