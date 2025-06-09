@@ -5,9 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
 import 'dart:io' show Platform;
+import 'package:easip_app/app/core/network/data_source.dart';
 
 class AuthService extends GetxService {
   static AuthService get to => Get.find<AuthService>();
+  final _dataSource = Get.find<RemoteDataSource>();
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'profile', 'openid'],
@@ -67,7 +69,8 @@ class AuthService extends GetxService {
       throw Exception('Refresh token not found');
     }
     final request = AuthRouter.refresh(refreshToken: refreshToken);
-    final response = AuthResponse.fromJson(request.body!);
+    final response = await _dataSource.execute(request);
+    if (response == null) throw Exception('Failed to refresh token');
     TokenStorage.saveAuthResponse(response);
     return response;
   }

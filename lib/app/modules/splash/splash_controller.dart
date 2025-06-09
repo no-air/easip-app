@@ -15,8 +15,10 @@ class SplashController extends GetxController {
   Future<void> _navigateToHome() async {
     try {
       final token = await TokenStorage.accessToken;
+      debugPrint('Tokentokentoken: $token');
       if (token == null || token.isEmpty) {
         await Future.delayed(const Duration(seconds: 2));
+         debugPrint('Token 없음');
         Get.offAllNamed(Routes.onboarding);
         return;
       }
@@ -24,13 +26,14 @@ class SplashController extends GetxController {
       // 토큰이 있으면 refresh 시도
       try {
         await AuthService().refresh();
+        await Future.delayed(const Duration(seconds: 2));
+        Get.offAllNamed(Routes.home);
       } catch (e) {
-        // refresh 실패해도 토큰이 있으므로 홈으로 이동
+        // refresh 실패 시 토큰이 만료되었거나 유효하지 않으므로 온보딩으로 이동
         debugPrint('Token refresh failed: $e');
+        await Future.delayed(const Duration(seconds: 2));
+        Get.offAllNamed(Routes.onboarding);
       }
-
-      await Future.delayed(const Duration(seconds: 2));
-      Get.offAllNamed(Routes.home);
     } catch (e) {
       await Future.delayed(const Duration(seconds: 2));
       Get.offAllNamed(Routes.onboarding);

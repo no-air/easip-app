@@ -6,7 +6,7 @@ import 'today_controller.dart';
 
 class TodayView extends GetView<TodayController> {
   TodayView({super.key});
-  final String baseUrl = dotenv.env['WEBVIEW_URL'] ?? '';
+  final String baseUrl = dotenv.env['DEV_WEBVIEW_URL'] ?? '';
 
   @override
   Widget build(BuildContext context) {
