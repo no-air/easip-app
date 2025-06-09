@@ -9,7 +9,7 @@ class MapView extends GetView<MapController> {
 
   @override
   Widget build(BuildContext context) {
-    final baseUrl = dotenv.env['BASE_URL'] ?? '';
+    final baseUrl = dotenv.env['DEV_WEBVIEW_URL'] ?? '';
     return Center(child: Webview(url: '$baseUrl/house-map'));
   }
 }
