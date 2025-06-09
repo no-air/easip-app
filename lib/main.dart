@@ -14,15 +14,15 @@ WebViewEnvironment? webViewEnvironment;
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  await EnvConfig().initialize(Environment.dev);
+  await EnvConfig().initialize(Environment.dev, Environment.prodWeb);
 
   try {
     // 1. 환경 변수 로드
-    await dotenv.load(fileName: ".env");
+    // await dotenv.load(fileName: ".env");
     
-    // 2. EnvConfig 초기화
-    final envConfig = EnvConfig();
-    await envConfig.initialize(Environment.dev);
+    // // 2. EnvConfig 초기화
+    // final envConfig = EnvConfig();
+    // await envConfig.initialize(Environment.dev, Environment.devWeb);
     
     // 3. 서비스 초기화
     final authService = AuthService();

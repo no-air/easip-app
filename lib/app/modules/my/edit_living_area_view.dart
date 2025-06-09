@@ -34,15 +34,12 @@ class EditLivingAreaView extends GetView<MyController> {
     }
 
     return Container(
-      padding: const EdgeInsets.only(top: 40, bottom: 24),
-      color: Colors.white,
+      padding: const EdgeInsets.only(top: 20, bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 51,
-            ), // X position 51px
+            padding: const EdgeInsets.symmetric(horizontal: 51, vertical: 10),
             child: Text(
               '거주지는 어디인가요?',
               style: EditAssets.headingStyle.copyWith(fontSize: 24),
@@ -50,114 +47,115 @@ class EditLivingAreaView extends GetView<MyController> {
             ),
           ),
           const SizedBox(height: 16),
-          SingleChildScrollView(
-            child: Center(
-              child: IntrinsicHeight(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // First column
-                    SizedBox(
-                      width: 117, // Fixed width for text frame
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: List.generate(
-                          firstColumn.length,
-                          (index) => SizedBox(
-                            height: 40, // Fixed height for each row
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 40, // 40x40 radio button
-                                  height: 40,
-                                  child: Radio<int>(
-                                    value: index,
-                                    groupValue: controller.livingArea.value,
-                                    onChanged: (int? value) {
-                                      if (value != null) {
-                                        controller.livingArea.value = value;
-                                      }
-                                    },
-                                    materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 77, // Remaining width for text
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      firstColumn[index],
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: 'plMedium',
-                                      ),
-                                      textAlign: TextAlign.center,
+          Expanded(
+            child: SingleChildScrollView(
+              child: Center(
+                child: IntrinsicHeight(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // First column
+                      SizedBox(
+                        width: 117, // Fixed width for text frame
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            firstColumn.length,
+                            (index) => SizedBox(
+                              height: 40, // Fixed height for each row
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 40, // 40x40 radio button
+                                    height: 40,
+                                    child: Radio<int>(
+                                      value: index,
+                                      groupValue: controller.livingArea.value,
+                                      onChanged: (int? value) {
+                                        if (value != null) {
+                                          controller.livingArea.value = value;
+                                        }
+                                      },
+                                      materialTapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
                                     ),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(
+                                    width: 77, // Remaining width for text
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        firstColumn[index],
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontFamily: 'plMedium',
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 38), // 38px between columns
-                    // Second column
-                    SizedBox(
-                      width: 117, // Fixed width for text frame
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: List.generate(
-                          secondColumn.length,
-                          (index) => SizedBox(
-                            height: 40, // Fixed height for each row
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 40, // 40x40 radio button
-                                  height: 40,
-                                  child: Radio<int>(
-                                    value: index + halfLength,
-                                    groupValue: controller.livingArea.value,
-                                    onChanged: (int? value) {
-                                      if (value != null) {
-                                        controller.livingArea.value = value;
-                                      }
-                                    },
-                                    materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 77, // Remaining width for text
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      secondColumn[index],
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: 'plMedium',
-                                      ),
-                                      textAlign: TextAlign.center,
+                      const SizedBox(width: 38), // 38px between columns
+                      // Second column
+                      SizedBox(
+                        width: 117, // Fixed width for text frame
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            secondColumn.length,
+                            (index) => SizedBox(
+                              height: 40, // Fixed height for each row
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 40, // 40x40 radio button
+                                    height: 40,
+                                    child: Radio<int>(
+                                      value: index + halfLength,
+                                      groupValue: controller.livingArea.value,
+                                      onChanged: (int? value) {
+                                        if (value != null) {
+                                          controller.livingArea.value = value;
+                                        }
+                                      },
+                                      materialTapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
                                     ),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(
+                                    width: 77, // Remaining width for text
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        secondColumn[index],
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontFamily: 'plMedium',
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-          const Spacer(),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: DefaultTextStyle(
               style: const TextStyle(
                 fontSize: 16,
