@@ -23,7 +23,7 @@ class HouseholdPage extends StatelessWidget {
     return BaseSurveyPage(
       currentStep: 4,
       totalSteps: 11,
-      title: '함께 살고 있는 가족 수는 \n 몇명인가요?',
+      title: '함께 살고 있는 가족 수는 \n 몇명인가요?(자신 제외)',
       controller: controller,
       isNextEnabled: controller.householdSize >= 0,
       onNextPressed: () {
@@ -70,16 +70,15 @@ class HouseholdPage extends StatelessWidget {
                             0,
                           );
                         }
-                        
+
                         // Update the text field with parsed value
                         final newText = count == 0 ? '' : count.toString();
                         if (familyCountController.text != newText) {
                           familyCountController.text = newText;
-                          familyCountController.selection = TextSelection.collapsed(
-                            offset: newText.length,
-                          );
+                          familyCountController.selection =
+                              TextSelection.collapsed(offset: newText.length);
                         }
-                        
+
                         // Update the next button state
                         controller.update();
                       }
