@@ -132,7 +132,16 @@ class _FamilySalariesPageState extends State<FamilySalariesPage> {
                         hintText: '1,000',
                         controller: _salaryControllers[index],
                         onChanged: (value) {
-                          controller.familySalaries[index] = int.parse(value);
+                          if (value.isNotEmpty) {
+                            final parsedValue = int.tryParse(value.replaceAll(',', '')) ?? 0;
+                            setState(() {
+                              controller.familySalaries[index] = parsedValue;
+                            });
+                          } else {
+                            setState(() {
+                              controller.familySalaries[index] = 0;
+                            });
+                          }
                           controller.update();
                         },
                       ),

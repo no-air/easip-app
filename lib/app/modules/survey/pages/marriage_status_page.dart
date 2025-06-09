@@ -17,7 +17,7 @@ class _MarriageStatusPageState extends State<MarriageStatusPage> {
   @override
   Widget build(BuildContext context) {
     return BaseSurveyPage(
-      currentStep: 7,
+      currentStep: 6,
       totalSteps: 11,
       title: '혼인 여부를 알려주세요',
       controller: controller,

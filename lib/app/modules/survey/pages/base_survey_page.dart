@@ -73,8 +73,17 @@ class _BaseSurveyPageState extends State<BaseSurveyPage> {
                               icon: const Icon(Icons.arrow_back_ios, size: 20),
                               onPressed: () {
                                 final currentStep = widget.currentStep;
-                                if (currentStep > 1) {
-                                  widget.controller.previousPage();
+                                if (currentStep > 0) {
+                                  if (currentStep == 7 &&
+                                      widget.controller.householdSize.value ==
+                                          0) {
+                                    // For page 7 with household size 0, go back two pages
+                                    widget.controller.currentPage.value -= 2;
+                                  } else {
+                                    // Normal case, go back one page
+                                    widget.controller.currentPage.value--;
+                                  }
+                                  widget.controller.updateNavigationState();
                                 }
                               },
                               padding: EdgeInsets.zero,

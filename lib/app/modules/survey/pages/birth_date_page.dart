@@ -64,7 +64,7 @@ class _BirthDatePageState extends State<BirthDatePage> {
   @override
   Widget build(BuildContext context) {
     return BaseSurveyPage(
-      currentStep: 1,
+      currentStep: 0,
       totalSteps: 11,
       title: '생년월일을 입력해주세요',
       controller: controller,
