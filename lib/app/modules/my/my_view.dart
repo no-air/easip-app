@@ -200,6 +200,7 @@ class MyView extends GetView<MyController> {
                     inputType: TextInputType.datetime,
                     isEditMode: controller.isEditMode.value,
                     formatValue: (value) => controller.formatDate(value),
+                    type: MyInfoRowType.none,
                   ),
                   MyChipRow(
                     label: '거주지역',
@@ -253,16 +254,16 @@ class MyView extends GetView<MyController> {
                     controller: controller.mySalaryController,
                     inputType: TextInputType.number,
                     isEditMode: controller.isEditMode.value,
-                    formatValue:
-                        (value) => controller.formatPrice(int.tryParse(value)),
+                    formatValue: (value) => value,
+                    type: MyInfoRowType.money,
                   ),
                   MyInfoRow(
                     label: '가족 월소득',
                     controller: controller.familySalaryController,
                     inputType: TextInputType.number,
                     isEditMode: controller.isEditMode.value,
-                    formatValue:
-                        (value) => controller.formatPrice(int.tryParse(value)),
+                    formatValue: (value) => value,
+                    type: MyInfoRowType.money,
                   ),
                   MyInfoRow(
                     label: '세대원 수',
@@ -270,22 +271,23 @@ class MyView extends GetView<MyController> {
                     inputType: TextInputType.number,
                     isEditMode: controller.isEditMode.value,
                     formatValue: (value) => value,
+                    type: MyInfoRowType.headCount,
                   ),
                   MyInfoRow(
                     label: '자동차가액',
                     controller: controller.carPriceController,
                     inputType: TextInputType.number,
                     isEditMode: controller.isEditMode.value,
-                    formatValue:
-                        (value) => controller.formatPrice(int.tryParse(value)),
+                    formatValue: (value) => value,
+                    type: MyInfoRowType.money,
                   ),
                   MyInfoRow(
                     label: '재산가액',
                     controller: controller.assetPriceController,
                     inputType: TextInputType.number,
                     isEditMode: controller.isEditMode.value,
-                    formatValue:
-                        (value) => controller.formatPrice(int.tryParse(value)),
+                    formatValue: (value) => value,
+                    type: MyInfoRowType.money,
                   ),
                 ],
               ),

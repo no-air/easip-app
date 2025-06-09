@@ -119,11 +119,11 @@ class MyController extends GetxController {
           .toIso8601String()
           .split('T')[0]
           .replaceAll('-', '');
-      mySalaryController.text = info.myMonthlySalary.toString();
-      familySalaryController.text = info.familyMemberMonthlySalary.toString();
+      mySalaryController.text = formatPrice(info.myMonthlySalary);
+      familySalaryController.text = formatPrice(info.familyMemberMonthlySalary);
       familyCountController.text = info.allFamilyMemberCount.toString();
-      carPriceController.text = info.carPrice.toString();
-      assetPriceController.text = info.assetPrice.toString();
+      carPriceController.text = formatPrice(info.carPrice);
+      assetPriceController.text = formatPrice(info.assetPrice);
       selectedPosition.value = info.position == UserPosition.youngMan;
     }
   }
@@ -171,16 +171,16 @@ class MyController extends GetxController {
       dayOfBirth: DateTime.parse(formattedDate),
       likingDistrictIds: userProfile.value?.likingDistrictIds ?? [],
       livingDistrictId: userProfile.value?.livingDistrictId ?? "",
-      myMonthlySalary: int.tryParse(mySalaryController.text) ?? 0,
-      familyMemberMonthlySalary: int.tryParse(familySalaryController.text) ?? 0,
+      myMonthlySalary: getOriginalPrice(mySalaryController.text),
+      familyMemberMonthlySalary: getOriginalPrice(familySalaryController.text),
       allFamilyMemberCount: int.tryParse(familyCountController.text) ?? 0,
       position:
           selectedPosition.value
               ? UserPosition.youngMan
               : UserPosition.newlywed,
-      hasCar: (int.tryParse(carPriceController.text) ?? 0) > 0,
-      carPrice: int.tryParse(carPriceController.text) ?? 0,
-      assetPrice: int.tryParse(assetPriceController.text) ?? 0,
+      hasCar: getOriginalPrice(carPriceController.text) > 0,
+      carPrice: getOriginalPrice(carPriceController.text),
+      assetPrice: getOriginalPrice(assetPriceController.text),
     );
 
     final livingDistrictName = userProfile.value?.livingDistrictId ?? "";
@@ -259,10 +259,18 @@ class MyController extends GetxController {
 
   String formatPrice(int? price) {
     if (price == null) return '0';
-    return price.toString().replaceAllMapped(
+    // 10,000원 단위로 변환
+    final priceInManwon = (price / 10000).round();
+    return priceInManwon.toString().replaceAllMapped(
       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
       (Match m) => '${m[1]},',
     );
+  }
+
+  // 서버로 보낼 때 사용할 원래 단위의 가격
+  int getOriginalPrice(String value) {
+    final manwon = int.tryParse(value.replaceAll(',', '')) ?? 0;
+    return manwon * 10000;
   }
 
   String formatDate(String date) {

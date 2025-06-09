@@ -1,12 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+enum MyInfoRowType {
+  money, headCount, none;
+
+  String get label {
+    switch (this) {
+      case MyInfoRowType.money:
+        return '만원';
+      case MyInfoRowType.headCount:
+        return '명';
+      case MyInfoRowType.none:
+        return '';
+    }
+  }
+}
+
 class MyInfoRow extends StatelessWidget {
   final String label;
   final TextEditingController controller;
   final TextInputType inputType;
   final bool isEditMode;
   final String Function(String) formatValue;
+  final MyInfoRowType type;
 
   const MyInfoRow({
     super.key,
@@ -15,6 +31,7 @@ class MyInfoRow extends StatelessWidget {
     required this.inputType,
     required this.isEditMode,
     required this.formatValue,
+    required this.type,
   });
 
   @override
@@ -33,50 +50,63 @@ class MyInfoRow extends StatelessWidget {
               color: Colors.black87,
             ),
           ),
+      
           Expanded(
-            child: Container(
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child:
-                  isEditMode
-                      ? SizedBox(
-                        width: 150,
-                        child: TextField(
-                          controller: controller,
-                          keyboardType: inputType,
-                          textAlign: TextAlign.right,
-                          inputFormatters:
-                              inputType == TextInputType.number
-                                  ? [FilteringTextInputFormatter.digitsOnly]
-                                  : null,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                          style: const TextStyle(
-                            fontFamily: 'plMedium',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            height: 1.2,
-                          ),
-                        ),
-                      )
-                      : Text(
-                        isEditMode
-                            ? controller.text
-                            : formatValue(controller.text),
-                        style: const TextStyle(
-                          fontFamily: 'plMedium',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          height: 1.2,
-                        ),
-                      ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child:
+                      isEditMode
+                          ? SizedBox(
+                              width: 150,
+                              child: TextField(
+                                controller: controller,
+                                keyboardType: inputType,
+                                textAlign: TextAlign.right,
+                                inputFormatters:
+                                    inputType == TextInputType.number
+                                        ? [FilteringTextInputFormatter.digitsOnly]
+                                        : null,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                                style: const TextStyle(
+                                  fontFamily: 'plMedium',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.2,
+                                ),
+                              ),
+                            )
+                          : Text(
+                              isEditMode
+                                  ? controller.text 
+                                  : formatValue(controller.text),
+                              style: const TextStyle(
+                                fontFamily: 'plMedium',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                height: 1.2,
+                              ),
+                            ),
+                ),
+              ],
             ),
           ),
+          const SizedBox(width: 4),
+          Text(type.label, style: const TextStyle(
+            fontFamily: 'plMedium',
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            height: 1.2,
+          ),),
         ],
       ),
     );
