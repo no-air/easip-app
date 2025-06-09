@@ -213,11 +213,15 @@ class MyView extends GetView<MyController> {
                               showModalBottomSheet(
                                 context: Get.context!,
                                 isScrollControlled: true,
-                                builder:
-                                    (context) => FractionallySizedBox(
-                                      heightFactor: 0.9,
-                                      child: const EditLivingAreaView(),
-                                    ),
+                                backgroundColor: Colors.white,
+                                useSafeArea: true,
+                                builder: (context) => Container(
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  child: FractionallySizedBox(
+                                    heightFactor: 0.8,
+                                    child: const EditLivingAreaView(),
+                                  ),
+                                ),
                               );
                             }
                             : null,
@@ -232,11 +236,15 @@ class MyView extends GetView<MyController> {
                               showModalBottomSheet(
                                 context: Get.context!,
                                 isScrollControlled: true,
-                                builder:
-                                    (context) => FractionallySizedBox(
-                                      heightFactor: 0.9,
-                                      child: const EditLikingAreaView(),
-                                    ),
+                                backgroundColor: Colors.white,
+                                useSafeArea: true,
+                                builder: (context) => Container(
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  child: FractionallySizedBox(
+                                    heightFactor: 0.8,
+                                    child: const EditLikingAreaView(),
+                                  ),
+                                ),
                               );
                             }
                             : null,

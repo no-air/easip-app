@@ -38,17 +38,15 @@ class EditLikingAreaView extends GetView<MyController> {
     int selectedCount = controller.likingAreas.where((v) => v).length;
 
     return Padding(
-      padding: const EdgeInsets.only(top: 40, bottom: 24),
+      padding: const EdgeInsets.only(top: 20, bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 51,
-            ), // X position 51px
+            padding: const EdgeInsets.symmetric(horizontal: 51, vertical: 10),
             child: Text(
               '관심있는 청약 지역은 어디인가요?',
-              style: EditAssets.headingStyle.copyWith(fontSize: 20),
+              style: EditAssets.headingStyle.copyWith(fontSize: 24),
               textAlign: TextAlign.left,
             ),
           ),
@@ -60,129 +58,130 @@ class EditLikingAreaView extends GetView<MyController> {
             ),
           ),
           const SizedBox(height: 16),
-          SingleChildScrollView(
-            child: Center(
-              child: IntrinsicHeight(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // First column
-                    SizedBox(
-                      width: 117, // Fixed width for text frame
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: List.generate(
-                          firstColumn.length,
-                          (index) => SizedBox(
-                            height: 40, // Fixed height for each row
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 40, // 40x40 checkbox
-                                  height: 40,
-                                  child: Checkbox(
-                                    value: controller.likingAreas[index],
-                                    onChanged: (bool? value) {
-                                      final isChecked =
-                                          controller.likingAreas[index];
-                                      if (value == true &&
-                                          selectedCount >= 3 &&
-                                          !isChecked) {
-                                        // 최대 3개 제한
-                                        return;
-                                      }
-                                      controller.likingAreas[index] =
-                                          value ?? false;
-                                    },
-                                    materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 77, // Remaining width for text
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      firstColumn[index],
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: 'plMedium',
-                                      ),
-                                      textAlign: TextAlign.center,
+          Expanded(
+            child: SingleChildScrollView(
+              child: Center(
+                child: IntrinsicHeight(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // First column
+                      SizedBox(
+                        width: 117, // Fixed width for text frame
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            firstColumn.length,
+                            (index) => SizedBox(
+                              height: 40, // Fixed height for each row
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 40, // 40x40 checkbox
+                                    height: 40,
+                                    child: Checkbox(
+                                      value: controller.likingAreas[index],
+                                      onChanged: (bool? value) {
+                                        final isChecked =
+                                            controller.likingAreas[index];
+                                        if (value == true &&
+                                            selectedCount >= 3 &&
+                                            !isChecked) {
+                                          // 최대 3개 제한
+                                          return;
+                                        }
+                                        controller.likingAreas[index] =
+                                            value ?? false;
+                                      },
+                                      materialTapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
                                     ),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(
+                                    width: 77, // Remaining width for text
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        firstColumn[index],
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontFamily: 'plMedium',
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 38), // 38px between columns
-                    // Second column
-                    SizedBox(
-                      width: 117, // Fixed width for text frame
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: List.generate(
-                          secondColumn.length,
-                          (index) => SizedBox(
-                            height: 40, // Fixed height for each row
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 40, // 40x40 checkbox
-                                  height: 40,
-                                  child: Checkbox(
-                                    value:
-                                        controller.likingAreas[index +
-                                            halfLength],
-                                    onChanged: (bool? value) {
-                                      final isChecked =
+                      const SizedBox(width: 38), // 38px between columns
+                      // Second column
+                      SizedBox(
+                        width: 117, // Fixed width for text frame
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            secondColumn.length,
+                            (index) => SizedBox(
+                              height: 40, // Fixed height for each row
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 40, // 40x40 checkbox
+                                    height: 40,
+                                    child: Checkbox(
+                                      value:
                                           controller.likingAreas[index +
-                                              halfLength];
-                                      if (value == true &&
-                                          selectedCount >= 3 &&
-                                          !isChecked) {
-                                        return;
-                                      }
-                                      controller.likingAreas[index +
-                                              halfLength] =
-                                          value ?? false;
-                                    },
-                                    materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 77, // Remaining width for text
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      secondColumn[index],
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: 'plMedium',
-                                      ),
-                                      textAlign: TextAlign.center,
+                                              halfLength],
+                                      onChanged: (bool? value) {
+                                        final isChecked =
+                                            controller.likingAreas[index +
+                                                halfLength];
+                                        if (value == true &&
+                                            selectedCount >= 3 &&
+                                            !isChecked) {
+                                          return;
+                                        }
+                                        controller.likingAreas[index +
+                                                halfLength] =
+                                            value ?? false;
+                                      },
+                                      materialTapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
                                     ),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(
+                                    width: 77, // Remaining width for text
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        secondColumn[index],
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontFamily: 'plMedium',
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-          const Spacer(),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: DefaultTextStyle(
               style: const TextStyle(fontSize: 16, fontFamily: 'plMedium'),
               child: Edit_Save_BottomButton(
